@@ -23,8 +23,11 @@ ue4/*/Plugins/*/Intermediate/*
 # Cache files for the editor to use
 ue4/*/DerivedDataCache/*
 
+# Rider files
+ue4/*/.idea/
+
 # Visual Studio 2015 user specific files
-.vs/
+ue4/*/.vs/
 
 # Compiled Object files
 *.slo

@@ -1,6 +1,7 @@
 ﻿#include "Animations/EixCharacterAnimInstance.h"
 #include "Characters/EixCharacter.h"
 #include "Components/EixCharacterIKComp.h"
+#include "Components/Movement/EixCharacterMovComp.h"
 
 void UEixCharacterAnimInstance::NativeBeginPlay()
 {
@@ -12,6 +13,14 @@ void UEixCharacterAnimInstance::NativeBeginPlay()
 void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+	if (!EixCharacterOwner.IsValid())
+	{
+		return;
+	}
+	FillIKParams();
+	const UEixCharacterMovComp* EixCharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
+	MoveSpeed = EixCharacterMovement->Velocity.Size();
+	bIsInAir = EixCharacterMovement->IsFalling();
 }
 
 void UEixCharacterAnimInstance::FillIKParams()

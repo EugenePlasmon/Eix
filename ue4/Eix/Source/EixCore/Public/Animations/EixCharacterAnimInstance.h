@@ -14,6 +14,13 @@ public:
 	
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsInAir;
+
 #pragma region IK
 /* Set in blueprint */
 protected:

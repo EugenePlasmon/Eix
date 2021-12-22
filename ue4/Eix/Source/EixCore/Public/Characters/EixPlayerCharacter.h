@@ -17,6 +17,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void BeginPlay() override;
+
+	virtual void MoveForward(float Value);
+	virtual void MoveRight(float Value);
+	virtual void Turn(float Value);
+	virtual void LookUp(float Value);
+	
+	virtual void StartSprint();
+	virtual void StopSprint();
 	
 	UEixPlayerCharacterMovComp* GetEixPlayerCharacterMovement() const { return EixPlayerCharacterMovement; }
 	

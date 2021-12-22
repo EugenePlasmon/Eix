@@ -1,9 +1,14 @@
 ﻿#include "Characters/EixPlayerCharacter.h"
+#include "Components/Movement/EixPlayerCharacterMovComp.h"
 
-AEixPlayerCharacter::AEixPlayerCharacter()
+AEixPlayerCharacter::AEixPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer
+		.SetDefaultSubobjectClass<UEixPlayerCharacterMovComp>(ACharacter::CharacterMovementComponentName)
+	)
 {
-	PrimaryActorTick.bCanEverTick = true;
+	EixPlayerCharacterMovement = StaticCast<UEixPlayerCharacterMovComp*>(GetCharacterMovement());
 }
+
 
 void AEixPlayerCharacter::BeginPlay()
 {

@@ -1,4 +1,7 @@
 ﻿#include "Components/Movement/EixPlayerCharacterMovComp.h"
+#include "Characters/EixPlayerCharacter.h"
+
+#include "GameFramework/Character.h"
 
 UEixPlayerCharacterMovComp::UEixPlayerCharacterMovComp()
 {
@@ -8,6 +11,8 @@ UEixPlayerCharacterMovComp::UEixPlayerCharacterMovComp()
 void UEixPlayerCharacterMovComp::BeginPlay()
 {
 	Super::BeginPlay();
+	checkf(GetCharacterOwner()->IsA<AEixCharacter>(), TEXT("UEixCharacterMovComp owner must be AEixCharacter"));
+	EixPlayerCharacterOwner = StaticCast<AEixCharacter*>(GetCharacterOwner());
 }
 
 void UEixPlayerCharacterMovComp::TickComponent(float DeltaTime, ELevelTick TickType,

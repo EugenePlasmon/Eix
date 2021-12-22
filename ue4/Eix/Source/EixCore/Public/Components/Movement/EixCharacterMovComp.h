@@ -4,6 +4,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EixCharacterMovComp.generated.h"
 
+class AEixCharacter;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class EIXCORE_API UEixCharacterMovComp : public UCharacterMovementComponent
 {
@@ -12,10 +14,13 @@ class EIXCORE_API UEixCharacterMovComp : public UCharacterMovementComponent
 public:
 	UEixCharacterMovComp();
 
-protected:
 	virtual void BeginPlay() override;
 
-public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	AEixCharacter* GetEixCharacterOwner() const { return EixCharacterOwner.Get(); }
+
+private:
+	TWeakObjectPtr<AEixCharacter> EixCharacterOwner;
 };

@@ -1,4 +1,5 @@
 ﻿#include "Characters/EixCharacter.h"
+#include "Components/EixCharacterIKComp.h"
 #include "Components/Movement/EixCharacterMovComp.h"
 
 AEixCharacter::AEixCharacter(const FObjectInitializer& ObjectInitializer)
@@ -7,4 +8,5 @@ AEixCharacter::AEixCharacter(const FObjectInitializer& ObjectInitializer)
 	)
 {
 	EixCharacterMovement = StaticCast<UEixCharacterMovComp*>(GetCharacterMovement());
+	IKComp = CreateDefaultSubobject<UEixCharacterIKComp>(TEXT("IKComponent"));
 }

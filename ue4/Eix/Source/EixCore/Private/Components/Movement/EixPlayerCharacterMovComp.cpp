@@ -12,7 +12,7 @@ void UEixPlayerCharacterMovComp::BeginPlay()
 {
 	Super::BeginPlay();
 	checkf(GetCharacterOwner()->IsA<AEixCharacter>(), TEXT("UEixCharacterMovComp owner must be AEixCharacter"));
-	EixPlayerCharacterOwner = StaticCast<AEixCharacter*>(GetCharacterOwner());
+	EixPlayerCharacterOwner = StaticCast<AEixPlayerCharacter*>(GetCharacterOwner());
 }
 
 void UEixPlayerCharacterMovComp::TickComponent(float DeltaTime, ELevelTick TickType,

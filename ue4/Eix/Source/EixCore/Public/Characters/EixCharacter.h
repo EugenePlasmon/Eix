@@ -5,6 +5,7 @@
 #include "EixCharacter.generated.h"
 
 class UEixCharacterMovComp;
+class UEixCharacterIKComp;
 
 UCLASS()
 class EIXCORE_API AEixCharacter : public ACharacter
@@ -15,8 +16,12 @@ public:
 	AEixCharacter(const FObjectInitializer& ObjectInitializer);
 
 	UEixCharacterMovComp* GetEixCharacterMovement() const { return EixCharacterMovement; }
+	UEixCharacterIKComp* GetIKComp() const { return IKComp; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UEixCharacterMovComp* EixCharacterMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UEixCharacterIKComp* IKComp;
 };

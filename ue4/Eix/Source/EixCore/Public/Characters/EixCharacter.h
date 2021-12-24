@@ -15,6 +15,8 @@ class EIXCORE_API AEixCharacter : public ACharacter
 public:
 	AEixCharacter(const FObjectInitializer& ObjectInitializer);
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	UEixCharacterMovComp* GetEixCharacterMovement() const { return EixCharacterMovement; }
 	UEixCharacterIKComp* GetIKComp() const { return IKComp; }
 

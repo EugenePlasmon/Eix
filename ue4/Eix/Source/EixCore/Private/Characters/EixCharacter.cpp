@@ -10,3 +10,9 @@ AEixCharacter::AEixCharacter(const FObjectInitializer& ObjectInitializer)
 	EixCharacterMovement = StaticCast<UEixCharacterMovComp*>(GetCharacterMovement());
 	IKComp = CreateDefaultSubobject<UEixCharacterIKComp>(TEXT("IKComponent"));
 }
+
+void AEixCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	IKComp->UpdateIK(DeltaSeconds);
+}

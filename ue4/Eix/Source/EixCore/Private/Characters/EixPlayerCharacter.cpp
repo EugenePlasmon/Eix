@@ -65,6 +65,11 @@ void AEixPlayerCharacter::StopSprint()
 {
 }
 
+FRotator AEixPlayerCharacter::GetAimOffset() const
+{
+	return ActorToWorld().InverseTransformRotation(GetBaseAimRotation().Quaternion()).Rotator();
+}
+
 void AEixPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

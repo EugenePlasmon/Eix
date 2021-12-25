@@ -27,6 +27,8 @@ public:
 	virtual void StopSprint();
 	
 	UEixPlayerCharacterMovComp* GetEixPlayerCharacterMovement() const { return EixPlayerCharacterMovement; }
+
+	FRotator GetAimOffset() const;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")

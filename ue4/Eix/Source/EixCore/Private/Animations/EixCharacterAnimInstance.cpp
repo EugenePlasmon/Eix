@@ -17,10 +17,15 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
+	FMath::GetMappedRangeValueClamped()
 	FillIKParams();
 	const UEixCharacterMovComp* EixCharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
 	MoveSpeed = EixCharacterMovement->Velocity.Size();
-	bIsInAir = EixCharacterMovement->IsFalling();
+	MovementState = EixCharacterMovement->GetMovementState();
+	if (MovementState == EEixCharacterMovementState::InAir)
+	{
+		FallingSpeed = EixCharacterMovement->Velocity.Z;
+	}
 }
 
 void UEixCharacterAnimInstance::FillIKParams()

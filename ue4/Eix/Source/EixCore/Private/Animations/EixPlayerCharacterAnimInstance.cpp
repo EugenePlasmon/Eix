@@ -38,9 +38,9 @@ void UEixPlayerCharacterAnimInstance::CalculateAimAngles(float DeltaSeconds)
 
 	float TargetAimAngleYaw;
 	float YawInterpSpeed;
-	// Reset character head if the player view is directed back enough long
 	if (bPlayerLooksBack && PlayerLookingBackTime >= AimOffsetLookingBackMaxTime)
 	{
+		// Reset character head if the player view is directed back enough long
 		TargetAimAngleYaw = 0.f;
 		YawInterpSpeed = AimOffsetResetDirectionInterpSpeed; 
 	}

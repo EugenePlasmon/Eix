@@ -21,3 +21,16 @@ void UEixCharacterMovComp::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UEixCharacterMovComp::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
+	if (IsMovingOnGround())
+	{
+		MovementState = EEixCharacterMovementState::OnGround;
+	}
+	else if (IsFalling())
+	{
+		MovementState = EEixCharacterMovementState::InAir;
+	}
+}
+

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Types/Character/EixCharacterMovementState.h"
 #include "EixCharacterMovComp.generated.h"
 
 class AEixCharacter;
@@ -20,7 +21,13 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	AEixCharacter* GetEixCharacterOwner() const { return EixCharacterOwner.Get(); }
+	EEixCharacterMovementState GetMovementState() const { return MovementState; }
+
+protected:
+	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 
 private:
+	EEixCharacterMovementState MovementState = EEixCharacterMovementState::None;
+	
 	TWeakObjectPtr<AEixCharacter> EixCharacterOwner;
 };

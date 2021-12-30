@@ -16,7 +16,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim specs|Aim offset")
-	float AimOffsetLookingBackMinAbsAngle = 135.f;
+	float AimOffsetLookingBackMinAbsAngle = 130.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim specs|Aim offset")
 	bool bKeepHeadDirectionWhileLookingBack = true;
@@ -30,13 +30,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim specs|Aim offset")
 	float AimOffsetResetDirectionInterpSpeed = 2.f;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Aim offset")
 	FRotator AimOffset;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Aim offset")
 	float AimAngleYaw;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Aim offset")
 	float AimAnglePitch;
 	
 private:

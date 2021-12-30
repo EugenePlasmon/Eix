@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Types/Character/EixCharacterMovementState.h"
 #include "EixCharacterAnimInstance.generated.h"
 
 UCLASS()
@@ -11,40 +12,43 @@ class EIXCORE_API UEixCharacterAnimInstance : public UAnimInstance
 
 public:
 	virtual void NativeBeginPlay() override;
-	
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
 	float MoveSpeed;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool bIsInAir;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
+	EEixCharacterMovementState MovementState;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
+	float FallingSpeed;
 
 #pragma region IK
 /* Set in blueprint */
 protected:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Anim specs|IK")
 	FName LeftFootBoneName;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Anim specs|IK")
 	FName RightFootBoneName;
 
 /* IK params */
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FVector PelvisOffset;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FVector LeftFootEffectorLocation;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FVector RightFootEffectorLocation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FRotator LeftFootRotation;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FRotator RightFootRotation;
 
 private:

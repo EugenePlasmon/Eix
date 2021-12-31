@@ -17,7 +17,6 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-	FMath::GetMappedRangeValueClamped()
 	FillIKParams();
 	const UEixCharacterMovComp* EixCharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
 	MoveSpeed = EixCharacterMovement->Velocity.Size();

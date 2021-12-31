@@ -10,11 +10,23 @@ class EIXCORE_API UEixCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
+#pragma region Overriden
 public:
 	virtual void NativeBeginPlay() override;
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+#pragma endregion
 
+#pragma region Configuration
+protected:
+	UPROPERTY(EditDefaultsOnly, Category="Configuration|IK")
+	FName LeftFootBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category="Configuration|IK")
+	FName RightFootBoneName;
+#pragma endregion
+
+#pragma region CalculatedParams
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
 	float MoveSpeed;
@@ -25,17 +37,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
 	float FallingSpeed;
 
-#pragma region IK
-/* Set in blueprint */
-protected:
-	UPROPERTY(EditDefaultsOnly, Category="Anim specs|IK")
-	FName LeftFootBoneName;
-
-	UPROPERTY(EditDefaultsOnly, Category="Anim specs|IK")
-	FName RightFootBoneName;
-
 /* IK params */
-protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FVector PelvisOffset;
 
@@ -50,15 +52,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FRotator RightFootRotation;
+/* ~IK params */
+#pragma endregion
 
 private:
 	void FillIKParams();
 
 	FVector ConvertIKOffsetFromWorldToBoneParent(FName BoneName, FVector IKOffsetWorld) const;
-#pragma endregion 
 
-#pragma region Misc
-private:
 	TWeakObjectPtr<class AEixCharacter> EixCharacterOwner;
-#pragma endregion
 };

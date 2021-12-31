@@ -68,6 +68,4 @@ void UEixPlayerCharacterAnimInstance::CalculateAimAngles(float DeltaSeconds)
 	}
 	
 	AimAngleYaw = FMath::FInterpTo(AimAngleYaw, TargetAimAngleYaw, DeltaSeconds, YawInterpSpeed);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Current %f, Target %f"), AimAngleYaw, TargetAimAngleYaw);
 }

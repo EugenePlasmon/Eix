@@ -17,17 +17,43 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-	FillIKParams();
-	const UEixCharacterMovComp* EixCharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
-	MoveSpeed = EixCharacterMovement->Velocity.Size();
-	MovementState = EixCharacterMovement->GetMovementState();
+	const UEixCharacterMovComp* CharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
+	MovementState = CharacterMovement->GetMovementState();
+	MoveSpeed = CharacterMovement->Velocity.Size();
 	if (MovementState == EEixCharacterMovementState::InAir)
 	{
-		FallingSpeed = EixCharacterMovement->Velocity.Z;
+		FallingSpeed = CharacterMovement->Velocity.Z;
 	}
+	CalculateLeanAmount();
+	CalculateIKParams();
 }
 
-void UEixCharacterAnimInstance::FillIKParams()
+void UEixCharacterAnimInstance::CalculateLeanAmount()
+{
+	const UEixCharacterMovComp* CharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
+	if (MovementState != EEixCharacterMovementState::OnGround
+		|| CharacterMovement->Velocity.IsNearlyZero())
+	{
+		LeanAmount = FVector2D::ZeroVector;
+		return;
+	}
+	
+	const FVector AccelerationWS = CharacterMovement->GetCurrentAcceleration();
+	const bool bAccelerating = FVector::DotProduct(CharacterMovement->Velocity, AccelerationWS) > 0.f;
+	const float MaxAcceleration = bAccelerating
+		                              ? CharacterMovement->GetMaxAcceleration()
+		                              : CharacterMovement->GetMaxBrakingDeceleration();
+	const FVector RelativeAccelerationWS = AccelerationWS.GetClampedToMaxSize(MaxAcceleration) / MaxAcceleration;
+	const FVector RelativeAccelerationLS = EixCharacterOwner->GetActorTransform().InverseTransformVector(RelativeAccelerationWS);
+
+	// TODO: Depending on Gait (Walk, Jog, Sprint) adjust the amount of lean
+	// Walk:	(X, Y) = (0, 0)
+	// Jog:		(X, Y) = (0, MidY)
+	// Sprint:	(X, Y) = (MidX, MaxY)
+	LeanAmount = FVector2D(0.f, RelativeAccelerationLS.Y);
+}
+
+void UEixCharacterAnimInstance::CalculateIKParams()
 {
 	if (LeftFootBoneName.IsNone() || RightFootBoneName.IsNone())
 	{

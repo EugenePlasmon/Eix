@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
 	float FallingSpeed;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|Lean")
+	FVector2D LeanAmount;
+	
 /* IK params */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
 	FVector PelvisOffset;
@@ -56,7 +59,9 @@ protected:
 #pragma endregion
 
 private:
-	void FillIKParams();
+	void CalculateLeanAmount();
+	
+	void CalculateIKParams();
 
 	FVector ConvertIKOffsetFromWorldToBoneParent(FName BoneName, FVector IKOffsetWorld) const;
 

@@ -22,6 +22,9 @@ private:
 
 	void StartSprint();
 	void StopSprint();
+
+	void StartWalk();
+	void StopWalk();
 	
 	TWeakObjectPtr<class AEixPlayerCharacter> EixPlayerCharacter;
 };

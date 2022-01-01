@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Types/Character/EixCharacterMovementState.h"
+#include "Types/AnimStructs/EixFootIKAnimParams.h"
+#include "Types/AnimStructs/EixLeanAnimConfig.h"
+#include "Types/Character/EixGait.h"
+#include "Types/Character/EixMovementState.h"
 #include "EixCharacterAnimInstance.generated.h"
 
 UCLASS()
@@ -19,11 +22,14 @@ public:
 
 #pragma region Configuration
 protected:
-	UPROPERTY(EditDefaultsOnly, Category="Configuration|IK")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Configuration|IK")
 	FName LeftFootBoneName;
 
-	UPROPERTY(EditDefaultsOnly, Category="Configuration|IK")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Configuration|IK")
 	FName RightFootBoneName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Configuration|Lean")
+	FEixLeanAnimConfig LeanConfiguration;
 #pragma endregion
 
 #pragma region CalculatedParams
@@ -32,36 +38,38 @@ protected:
 	float MoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
-	EEixCharacterMovementState MovementState;
+	EEixMovementState MovementState;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
+	EEixGait CurrentGait;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
 	float FallingSpeed;
+	
+	/**
+	 * In local space.
+	 * Coordinate values are normalized to range (-1, 1) where 1 means max acceleration and -1 means max deceleration
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
+	FVector RelativeAcceleration;
 
+	/**
+	 * X value is a lean amount in forward/backward direction and Y value is in left/right direction in local space.
+	 * Coordinate values are normalized to range (-1, 1) where 1 and -1 mean max lean amount in a corresponding direction
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|Lean")
 	FVector2D LeanAmount;
 	
-/* IK params */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
-	FVector PelvisOffset;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
-	FVector LeftFootEffectorLocation;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
-	FVector RightFootEffectorLocation;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
-	FRotator LeftFootRotation;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|IK")
-	FRotator RightFootRotation;
-/* ~IK params */
+	FEixFootIKAnimParams FootIKAnimParams;
 #pragma endregion
 
 private:
-	void CalculateLeanAmount();
+	FVector CalculateRelativeAcceleration() const;
 	
-	void CalculateIKParams();
+	FVector2D CalculateLeanAmount(float DeltaSeconds) const;
+	
+	FEixFootIKAnimParams CalculateFootIKParams() const;
 
 	FVector ConvertIKOffsetFromWorldToBoneParent(FName BoneName, FVector IKOffsetWorld) const;
 

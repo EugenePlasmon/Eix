@@ -16,3 +16,19 @@ void AEixCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	IKComp->UpdateIK(DeltaSeconds);
 }
+
+void AEixCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AEixCharacter::SetDesiredGait(EEixGait In_DesiredGait)
+{
+	DesiredGait = In_DesiredGait;
+	EixCharacterMovement->SetCurrentGait(GetCurrentAllowedGait());
+}
+
+EEixGait AEixCharacter::GetCurrentAllowedGait() const
+{
+	return DesiredGait;
+}

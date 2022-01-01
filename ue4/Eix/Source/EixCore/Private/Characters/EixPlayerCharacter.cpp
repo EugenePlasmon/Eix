@@ -59,15 +59,47 @@ void AEixPlayerCharacter::LookUp(float Value)
 
 void AEixPlayerCharacter::StartSprint()
 {
+	SetDesiredGait(EEixGait::Sprint);
 }
 
 void AEixPlayerCharacter::StopSprint()
 {
+	if (GetDesiredGait() == EEixGait::Sprint)
+	{
+		SetDesiredGait(EEixGait::Jog);
+	}
+}
+
+void AEixPlayerCharacter::StartWalk()
+{
+	SetDesiredGait(EEixGait::Walk);
+}
+
+void AEixPlayerCharacter::StopWalk()
+{
+	if (GetDesiredGait() == EEixGait::Walk)
+	{
+		SetDesiredGait(EEixGait::Jog);
+	}
 }
 
 FRotator AEixPlayerCharacter::GetAimOffset() const
 {
 	return ActorToWorld().InverseTransformRotation(GetBaseAimRotation().Quaternion()).Rotator();
+}
+
+EEixGait AEixPlayerCharacter::GetCurrentAllowedGait() const
+{
+	if (GetDesiredGait() == EEixGait::Sprint)
+	{
+		return CanSprint() ? EEixGait::Sprint : EEixGait::Jog;
+	}
+	return GetDesiredGait();
+}
+
+bool AEixPlayerCharacter::CanSprint() const
+{
+	return !EixPlayerCharacterMovement->GetCurrentAcceleration().IsNearlyZero();
 }
 
 void AEixPlayerCharacter::Tick(float DeltaTime)

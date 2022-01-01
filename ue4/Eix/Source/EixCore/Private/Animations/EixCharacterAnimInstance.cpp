@@ -19,53 +19,61 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 	const UEixCharacterMovComp* CharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
 	MovementState = CharacterMovement->GetMovementState();
+	CurrentGait = CharacterMovement->GetCurrentGait();
 	MoveSpeed = CharacterMovement->Velocity.Size();
-	if (MovementState == EEixCharacterMovementState::InAir)
+	if (MovementState == EEixMovementState::InAir)
 	{
+		// Set falling speed only when in air to save the last in-air speed value and use it in grounded state
 		FallingSpeed = CharacterMovement->Velocity.Z;
 	}
-	CalculateLeanAmount();
-	CalculateIKParams();
+	RelativeAcceleration = CalculateRelativeAcceleration();
+	LeanAmount = CalculateLeanAmount(DeltaSeconds);
+	FootIKAnimParams = CalculateFootIKParams();
 }
 
-void UEixCharacterAnimInstance::CalculateLeanAmount()
+FVector UEixCharacterAnimInstance::CalculateRelativeAcceleration() const
 {
 	const UEixCharacterMovComp* CharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
-	if (MovementState != EEixCharacterMovementState::OnGround
-		|| CharacterMovement->Velocity.IsNearlyZero())
+	const FVector Acceleration = CharacterMovement->GetVelocityAcceleration_LS();
+	if (Acceleration.IsNearlyZero(0.01f))
 	{
-		LeanAmount = FVector2D::ZeroVector;
-		return;
+		return FVector::ZeroVector;
 	}
-	
-	const FVector AccelerationWS = CharacterMovement->GetCurrentAcceleration();
-	const bool bAccelerating = FVector::DotProduct(CharacterMovement->Velocity, AccelerationWS) > 0.f;
+	// if false - then decelerating
+	const bool bAccelerating = FVector::DotProduct(CharacterMovement->Velocity, Acceleration) > 0.f;
 	const float MaxAcceleration = bAccelerating
 		                              ? CharacterMovement->GetMaxAcceleration()
 		                              : CharacterMovement->GetMaxBrakingDeceleration();
-	const FVector RelativeAccelerationWS = AccelerationWS.GetClampedToMaxSize(MaxAcceleration) / MaxAcceleration;
-	const FVector RelativeAccelerationLS = EixCharacterOwner->GetActorTransform().InverseTransformVector(RelativeAccelerationWS);
-
-	// TODO: Depending on Gait (Walk, Jog, Sprint) adjust the amount of lean
-	// Walk:	(X, Y) = (0, 0)
-	// Jog:		(X, Y) = (0, MidY)
-	// Sprint:	(X, Y) = (MidX, MaxY)
-	LeanAmount = FVector2D(0.f, RelativeAccelerationLS.Y);
+	return Acceleration.GetClampedToMaxSize(MaxAcceleration) / MaxAcceleration;
 }
 
-void UEixCharacterAnimInstance::CalculateIKParams()
+FVector2D UEixCharacterAnimInstance::CalculateLeanAmount(float DeltaSeconds) const
 {
-	if (LeftFootBoneName.IsNone() || RightFootBoneName.IsNone())
+	const UEixCharacterMovComp* CharacterMovement = EixCharacterOwner->GetEixCharacterMovement();
+	if (MovementState != EEixMovementState::OnGround
+		|| CharacterMovement->Velocity.IsNearlyZero())
 	{
-		return;
+		return FVector2D::ZeroVector;
 	}
+	const FVector2D TargetLeanAmount =
+		LeanConfiguration.LeanAmountModifierForGait(CurrentGait) * FVector2D(RelativeAcceleration);
+	return FMath::Vector2DInterpTo(LeanAmount,
+	                               TargetLeanAmount,
+	                               DeltaSeconds,
+	                               LeanConfiguration.LeanAmountInterpSpeed);
+}
 
+FEixFootIKAnimParams UEixCharacterAnimInstance::CalculateFootIKParams() const
+{
+	check(!LeftFootBoneName.IsNone() && !RightFootBoneName.IsNone());
 	const UEixCharacterIKComp* IKComponent = EixCharacterOwner->GetIKComp();
-	PelvisOffset = IKComponent->GetIKOffset_Pelvis();
-	LeftFootEffectorLocation = ConvertIKOffsetFromWorldToBoneParent(LeftFootBoneName, IKComponent->GetIKOffset_LeftFoot());
-	RightFootEffectorLocation = ConvertIKOffsetFromWorldToBoneParent(RightFootBoneName, IKComponent->GetIKOffset_RightFoot());
-	LeftFootRotation = IKComponent->GetIKRotation_LeftFoot();
-	RightFootRotation = IKComponent->GetIKRotation_RightFoot();
+	return FEixFootIKAnimParams(
+		IKComponent->GetIKOffset_Pelvis(),
+		ConvertIKOffsetFromWorldToBoneParent(LeftFootBoneName, IKComponent->GetIKOffset_LeftFoot()),
+		ConvertIKOffsetFromWorldToBoneParent(RightFootBoneName, IKComponent->GetIKOffset_RightFoot()),
+		IKComponent->GetIKRotation_LeftFoot(),
+		IKComponent->GetIKRotation_RightFoot()
+	);
 }
 
 FVector UEixCharacterAnimInstance::ConvertIKOffsetFromWorldToBoneParent(FName BoneName, FVector IKOffsetWorld) const

@@ -14,10 +14,23 @@ class EIXCORE_API AEixPlayerCharacter : public AEixCharacter
 public:
 	AEixPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
+#pragma region Overriden
+protected:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void BeginPlay() override;
+#pragma endregion
 
+#pragma region Components
+public:
+	UEixPlayerCharacterMovComp* GetEixPlayerCharacterMovement() const { return EixPlayerCharacterMovement; }
+	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UEixPlayerCharacterMovComp* EixPlayerCharacterMovement;
+#pragma endregion
+
+public:
 	virtual void MoveForward(float Value);
 	virtual void MoveRight(float Value);
 	virtual void Turn(float Value);
@@ -25,12 +38,14 @@ public:
 	
 	virtual void StartSprint();
 	virtual void StopSprint();
-	
-	UEixPlayerCharacterMovComp* GetEixPlayerCharacterMovement() const { return EixPlayerCharacterMovement; }
 
-	FRotator GetAimOffset() const;
+	virtual void StartWalk();
+	virtual void StopWalk();
 	
+	FRotator GetAimOffset() const;
+
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	UEixPlayerCharacterMovComp* EixPlayerCharacterMovement;
+	virtual EEixGait GetCurrentAllowedGait() const override;
+
+	bool CanSprint() const;
 };

@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
 	EEixGait CurrentGait;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
+	EEixGait CurrentActualGait;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
 	float FallingSpeed;
 	

@@ -22,12 +22,7 @@ void UEixCharacterMovComp::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
-	VelocityAcceleration = (Velocity - PrevVelocity) / DeltaTime;
-	VelocityAcceleration_LS = PrevActorRotation.UnrotateVector(VelocityAcceleration);
-	
-	PrevVelocity = Velocity;
-	PrevActorRotation = EixCharacterOwner->GetActorRotation();
+	UpdateCharacterMovementValues(DeltaTime);
 }
 
 void UEixCharacterMovComp::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
@@ -41,6 +36,24 @@ void UEixCharacterMovComp::OnMovementModeChanged(EMovementMode PreviousMovementM
 	{
 		MovementState = EEixMovementState::InAir;
 	}
+}
+
+EEixGait UEixCharacterMovComp::GetCurrentActualGait() const
+{
+	constexpr float Tolerance = 1.f; // don't need to be too precise in this calculation
+	if (FMath::IsNearlyEqual(MoveSpeed, MovementSpecs.GetMaxSpeedForGait(CurrentGait), Tolerance))
+	{
+		return CurrentGait;
+	}
+	if (MoveSpeed < MovementSpecs.MaxWalkSpeed + Tolerance)
+	{
+		return EEixGait::Walk;
+	}
+	if (MoveSpeed < MovementSpecs.MaxJogSpeed + Tolerance)
+	{
+		return EEixGait::Jog;
+	}
+	return EEixGait::Sprint;
 }
 
 void UEixCharacterMovComp::SetCurrentGait(EEixGait In_CurrentGait)
@@ -65,5 +78,15 @@ void UEixCharacterMovComp::ReadMovementSpecs()
 		MovementSpecsTable.RowName, GetFullName());
 	check(FoundSpecs);
 	MovementSpecs = *FoundSpecs;
+}
+
+void UEixCharacterMovComp::UpdateCharacterMovementValues(float DeltaTime)
+{
+	MoveSpeed = Velocity.Size2D();
+	VelocityAcceleration = (Velocity - PrevVelocity) / DeltaTime;
+	VelocityAcceleration_LS = PrevActorRotation.UnrotateVector(VelocityAcceleration);
+	
+	PrevVelocity = Velocity;
+	PrevActorRotation = EixCharacterOwner->GetActorRotation();
 }
 

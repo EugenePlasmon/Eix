@@ -31,9 +31,19 @@ protected:
 #pragma region Properties
 public:
 	AEixCharacter* GetEixCharacterOwner() const { return EixCharacterOwner.Get(); }
+	
 	EEixMovementState GetMovementState() const { return MovementState; }
+	
 	EEixGait GetCurrentGait() const { return CurrentGait; }
-	/* In local actor's coordinates */
+
+	/** Actual gait is determined by the current speed.
+	 * For example, when a character is turning around, his move speed slows.
+	 * Actual gait calculated like this is usually needed for more believable animation blends */
+	EEixGait GetCurrentActualGait() const;
+
+	float GetMoveSpeed() const { return MoveSpeed; }
+	
+	/** In local actor's coordinates */
 	FVector GetVelocityAcceleration_LS() const { return VelocityAcceleration_LS; }
 	
 	void SetCurrentGait(EEixGait In_CurrentGait);
@@ -54,11 +64,16 @@ private:
 
 	FVector VelocityAcceleration = FVector::ZeroVector;
 	FVector VelocityAcceleration_LS = FVector::ZeroVector;
+
+	float MoveSpeed = 0.f;
 	
 	TWeakObjectPtr<AEixCharacter> EixCharacterOwner;
+#pragma endregion 
 
+private:
 	void CacheCharacterOwner();
 
 	void ReadMovementSpecs();
-#pragma endregion 
+
+	void UpdateCharacterMovementValues(float DeltaTime);
 };

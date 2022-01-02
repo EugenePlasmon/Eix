@@ -48,12 +48,13 @@ void UEixPlayerCharacterAnimInstance::CalculateAimAngles(float DeltaSeconds)
 	{
 		TargetAimAngleYaw = AimOffset.Yaw;
 		YawInterpSpeed = AimOffsetInterpSpeed;
-		
-		// Keep looking from the same direction (do not rotate head to prevent it from unnecessary going back and forth)
+
+		// Keep looking with the same head angle when crossing the 180/-180 limit
+		// until target angle reaches certain value
 		const bool bIsLookingRightBack = AimAngleYaw >= AimOffsetLookingBackMinAbsAngle;
 		const bool bIsLookingLeftBack = AimAngleYaw <= -AimOffsetLookingBackMinAbsAngle;
-		const bool bWantsLookRightBack = AimOffset.Yaw >= AimOffsetLookingBackMinAbsAngle;
-		const bool bWantsLookLeftBack = AimOffset.Yaw <= -AimOffsetLookingBackMinAbsAngle;
+		const bool bWantsLookRightBack = TargetAimAngleYaw >= AimOffsetLookingBackMinAbsAngle;
+		const bool bWantsLookLeftBack = TargetAimAngleYaw <= -AimOffsetLookingBackMinAbsAngle;
 		if (bKeepHeadDirectionWhileLookingBack)
 		{
 			if (bIsLookingRightBack && bWantsLookLeftBack)
@@ -61,6 +62,21 @@ void UEixPlayerCharacterAnimInstance::CalculateAimAngles(float DeltaSeconds)
 				TargetAimAngleYaw = 180.f;
 			}
 			else if (bIsLookingLeftBack && bWantsLookRightBack)
+			{
+				TargetAimAngleYaw = -180.f;
+			}
+		}
+
+		// Target angle can sometimes gallop in short range near 180 or -180 (cause it is pretty much the same angle).
+		// So we prevent head from unnecessary going back and forth in this situation.
+		if (FMath::IsNearlyEqual(TargetAimAngleYaw, 180.f, 1.f) ||
+			FMath::IsNearlyEqual(TargetAimAngleYaw, -180.f, 1.f))
+		{
+			if (AimAngleYaw >= 0.f)
+			{
+				TargetAimAngleYaw = 180.f;
+			}
+			else
 			{
 				TargetAimAngleYaw = -180.f;
 			}

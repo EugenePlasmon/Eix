@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/EixCharacter.h"
+#include "Components/TimelineComponent.h"
 #include "EixPlayerCharacter.generated.h"
 
 class UEixPlayerCharacterMovComp;
@@ -41,6 +42,11 @@ public:
 
 	virtual void StartWalk();
 	virtual void StopWalk();
+	
+	virtual void Roll();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnStartRolling();
 	
 	FRotator GetAimOffset() const;
 

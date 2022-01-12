@@ -19,6 +19,7 @@ void AEixPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AEixPlayerController::StopSprint);
 	InputComponent->BindAction(TEXT("Walk"), IE_Pressed, this, &AEixPlayerController::StartWalk);
 	InputComponent->BindAction(TEXT("Walk"), IE_Released, this, &AEixPlayerController::StopWalk);
+	InputComponent->BindAction(TEXT("Roll"), IE_Pressed, this, &AEixPlayerController::Roll);
 }
 
 void AEixPlayerController::MoveForward(float Value)
@@ -82,5 +83,13 @@ void AEixPlayerController::StopWalk()
 	if (EixPlayerCharacter.IsValid())
 	{
 		EixPlayerCharacter->StopWalk();
+	}
+}
+
+void AEixPlayerController::Roll()
+{
+	if (EixPlayerCharacter.IsValid())
+	{
+		EixPlayerCharacter->Roll();
 	}
 }

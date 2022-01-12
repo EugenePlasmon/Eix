@@ -8,6 +8,7 @@ enum class EEixMovementState: uint8
 {
 	None,
 	OnGround,
+	Rolling,
 	InAir,
 	Ragdoll
 };

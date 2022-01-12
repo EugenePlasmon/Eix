@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Types/Character/EixGait.h"
-#include "Types/Character/EixMovementSpecs.h"
 #include "EixCharacter.generated.h"
 
 class UEixCharacterMovComp;

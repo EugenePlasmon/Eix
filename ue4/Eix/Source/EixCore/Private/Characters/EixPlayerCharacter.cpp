@@ -9,6 +9,10 @@ AEixPlayerCharacter::AEixPlayerCharacter(const FObjectInitializer& ObjectInitial
 	EixPlayerCharacterMovement = StaticCast<UEixPlayerCharacterMovComp*>(GetCharacterMovement());
 }
 
+void AEixPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
 
 void AEixPlayerCharacter::BeginPlay()
 {
@@ -17,9 +21,7 @@ void AEixPlayerCharacter::BeginPlay()
 
 void AEixPlayerCharacter::MoveForward(float Value)
 {
-	if (FMath::IsNearlyZero(Value)
-		|| !EixPlayerCharacterMovement->IsMovingOnGround()
-		|| EixPlayerCharacterMovement->IsFalling())
+	if (FMath::IsNearlyZero(Value))
 	{
 		return;
 	}
@@ -29,9 +31,7 @@ void AEixPlayerCharacter::MoveForward(float Value)
 
 void AEixPlayerCharacter::MoveRight(float Value)
 {
-	if (FMath::IsNearlyZero(Value)
-		|| !EixPlayerCharacterMovement->IsMovingOnGround()
-		|| EixPlayerCharacterMovement->IsFalling())
+	if (FMath::IsNearlyZero(Value))
 	{
 		return;
 	}
@@ -83,6 +83,16 @@ void AEixPlayerCharacter::StopWalk()
 	}
 }
 
+void AEixPlayerCharacter::Roll()
+{
+	if (!EixPlayerCharacterMovement->CanStartRolling())
+	{
+		return;
+	}
+	EixPlayerCharacterMovement->StartRolling();
+	OnStartRolling();
+}
+
 FRotator AEixPlayerCharacter::GetAimOffset() const
 {
 	return ActorToWorld().InverseTransformRotation(GetBaseAimRotation().Quaternion()).Rotator();
@@ -100,9 +110,4 @@ EEixGait AEixPlayerCharacter::GetCurrentAllowedGait() const
 bool AEixPlayerCharacter::CanSprint() const
 {
 	return !EixPlayerCharacterMovement->GetCurrentAcceleration().IsNearlyZero();
-}
-
-void AEixPlayerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

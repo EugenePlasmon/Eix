@@ -2,6 +2,7 @@
 #include "Characters/EixCharacter.h"
 
 #include "GameFramework/Character.h"
+#include "Types/Character/EixCustomMovementMode.h"
 
 UEixCharacterMovComp::UEixCharacterMovComp()
 {
@@ -30,11 +31,22 @@ void UEixCharacterMovComp::OnMovementModeChanged(EMovementMode PreviousMovementM
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
 	if (IsMovingOnGround())
 	{
-		MovementState = EEixMovementState::OnGround;
+		EixMovementState = EEixMovementState::OnGround;
 	}
 	else if (IsFalling())
 	{
-		MovementState = EEixMovementState::InAir;
+		EixMovementState = EEixMovementState::InAir;
+	}
+	else if (MovementMode == MOVE_Custom)
+	{
+		switch (CustomMovementMode)
+		{
+		case CMOVE_Rolling:
+			EixMovementState = EEixMovementState::Rolling;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -89,4 +101,3 @@ void UEixCharacterMovComp::UpdateCharacterMovementValues(float DeltaTime)
 	PrevVelocity = Velocity;
 	PrevActorRotation = EixCharacterOwner->GetActorRotation();
 }
-

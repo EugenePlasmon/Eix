@@ -21,7 +21,14 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	MovementState = CharacterMovement->GetMovementState();
 	CurrentGait = CharacterMovement->GetCurrentGait();
 	CurrentActualGait = CharacterMovement->GetCurrentActualGait();
-	MoveSpeed = CharacterMovement->GetMoveSpeed();
+	if (MovementState == EEixMovementState::OnGround)
+	{
+		MoveSpeed = CharacterMovement->GetMoveSpeed();
+	}
+	else
+	{
+		MoveSpeed = 0.f;
+	}
 	if (MovementState == EEixMovementState::InAir)
 	{
 		// Set falling speed only when in air to save the last in-air speed value and use it in grounded state

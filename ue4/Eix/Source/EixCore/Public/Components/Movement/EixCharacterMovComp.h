@@ -32,7 +32,7 @@ protected:
 public:
 	AEixCharacter* GetEixCharacterOwner() const { return EixCharacterOwner.Get(); }
 	
-	EEixMovementState GetMovementState() const { return MovementState; }
+	EEixMovementState GetMovementState() const { return EixMovementState; }
 	
 	EEixGait GetCurrentGait() const { return CurrentGait; }
 
@@ -52,11 +52,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Eix|Specs")
 	FDataTableRowHandle MovementSpecsTable;
 	
-	UPROPERTY(BlueprintReadOnly, Category="Eix|Specs")
+	UPROPERTY(BlueprintReadOnly)
 	FEixMovementSpecs MovementSpecs;
 
+	UPROPERTY(BlueprintReadOnly)
+	EEixMovementState EixMovementState = EEixMovementState::None;
+	
 private:
-	EEixMovementState MovementState = EEixMovementState::None;
 	EEixGait CurrentGait = EEixGait::Jog;
 
 	FVector PrevVelocity = FVector::ZeroVector;

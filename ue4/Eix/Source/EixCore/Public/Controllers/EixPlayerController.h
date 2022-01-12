@@ -25,6 +25,8 @@ private:
 
 	void StartWalk();
 	void StopWalk();
+
+	void Roll();
 	
 	TWeakObjectPtr<class AEixPlayerCharacter> EixPlayerCharacter;
 };

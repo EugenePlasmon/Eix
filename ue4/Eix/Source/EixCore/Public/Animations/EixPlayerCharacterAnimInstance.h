@@ -44,6 +44,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Aim offset")
 	float AimAnglePitch;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Attack")
+	bool bIsAttacking;
 #pragma endregion
 	
 private:

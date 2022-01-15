@@ -1,5 +1,7 @@
 ﻿#include "Characters/EixPlayerCharacter.h"
+
 #include "Components/Movement/EixPlayerCharacterMovComp.h"
+#include "Components/EixCharacterMeleeCombatComp.h"
 
 AEixPlayerCharacter::AEixPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer
@@ -7,6 +9,7 @@ AEixPlayerCharacter::AEixPlayerCharacter(const FObjectInitializer& ObjectInitial
 	)
 {
 	EixPlayerCharacterMovement = StaticCast<UEixPlayerCharacterMovComp*>(GetCharacterMovement());
+	MeleeCombatComp = CreateDefaultSubobject<UEixCharacterMeleeCombatComp>(TEXT("MeleeCombatComponent"));
 }
 
 void AEixPlayerCharacter::Tick(float DeltaTime)
@@ -19,12 +22,28 @@ void AEixPlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AEixPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if (!CanMeleeAttack() && MeleeCombatComp->IsPlayingAttack())
+	{
+		MeleeCombatComp->HaltCombo(true);
+	}
+}
+
 void AEixPlayerCharacter::MoveForward(float Value)
 {
 	if (FMath::IsNearlyZero(Value))
 	{
 		return;
 	}
+
+	if (MeleeCombatComp->IsAttackFading())
+	{
+		MeleeCombatComp->HaltCombo();
+	}
+	
 	const FVector Direction = FRotator(0.f, GetControlRotation().Yaw, 0.f).Vector();
 	AddMovementInput(Direction, Value);
 }
@@ -35,6 +54,12 @@ void AEixPlayerCharacter::MoveRight(float Value)
 	{
 		return;
 	}
+
+	if (MeleeCombatComp->IsAttackFading())
+	{
+		MeleeCombatComp->HaltCombo();
+	}
+	
 	const FVector Direction = FRotator(0.f, GetControlRotation().Yaw, 0.f).RotateVector(FVector::RightVector);
 	AddMovementInput(Direction, Value);
 }
@@ -89,8 +114,34 @@ void AEixPlayerCharacter::Roll()
 	{
 		return;
 	}
+
+	if (MeleeCombatComp->IsAttackExecuting())
+	{
+		return;
+	}
+	if (MeleeCombatComp->IsAttackFading())
+	{
+		MeleeCombatComp->HaltCombo();
+	}
+	
 	EixPlayerCharacterMovement->StartRolling();
 	OnStartRolling();
+}
+
+void AEixPlayerCharacter::PrimaryAttack()
+{
+	if (CanMeleeAttack())
+	{
+		MeleeCombatComp->PrimaryAttack();
+	}
+}
+
+void AEixPlayerCharacter::SecondaryAttack()
+{
+	if (CanMeleeAttack())
+	{
+		MeleeCombatComp->SecondaryAttack();
+	}
 }
 
 FRotator AEixPlayerCharacter::GetAimOffset() const
@@ -110,4 +161,9 @@ EEixGait AEixPlayerCharacter::GetCurrentAllowedGait() const
 bool AEixPlayerCharacter::CanSprint() const
 {
 	return !EixPlayerCharacterMovement->GetCurrentAcceleration().IsNearlyZero();
+}
+
+bool AEixPlayerCharacter::CanMeleeAttack() const
+{
+	return EixPlayerCharacterMovement->IsMovingOnGround();
 }

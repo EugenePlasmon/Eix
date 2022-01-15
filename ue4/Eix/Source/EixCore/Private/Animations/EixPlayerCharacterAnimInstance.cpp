@@ -1,5 +1,6 @@
 ﻿#include "Animations/EixPlayerCharacterAnimInstance.h"
 #include "Characters/EixPlayerCharacter.h"
+#include "Components/EixCharacterMeleeCombatComp.h"
 
 void UEixPlayerCharacterAnimInstance::NativeBeginPlay()
 {
@@ -16,6 +17,7 @@ void UEixPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 	CalculateAimAngles(DeltaSeconds);
+	bIsAttacking = EixCharacterOwner->GetMeleeCombatComp()->IsAttackExecuting();
 }
 
 void UEixPlayerCharacterAnimInstance::CalculateAimAngles(float DeltaSeconds)

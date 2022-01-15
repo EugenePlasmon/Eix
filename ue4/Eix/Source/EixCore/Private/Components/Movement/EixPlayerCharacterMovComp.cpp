@@ -65,7 +65,7 @@ bool UEixPlayerCharacterMovComp::IsRolling() const
 
 bool UEixPlayerCharacterMovComp::CanStartRolling() const
 {
-	return IsMovingOnGround() && !IsRolling();
+	return IsMovingOnGround();
 }
 
 void UEixPlayerCharacterMovComp::StartRolling()

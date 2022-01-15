@@ -1,13 +1,16 @@
 {
-    "FileVersion": 3,
-    "EngineAssociation": "4.27",
-    "Category": "",
-    "Description": "",
-    "Modules": [
-        {
-            "Name": "EixCore",
-            "Type": "Runtime",
-            "LoadingPhase": "Default"
-        }
-    ]
+	"FileVersion": 3,
+	"EngineAssociation": "4.27",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "EixCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
 }

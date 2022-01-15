@@ -28,5 +28,8 @@ private:
 
 	void Roll();
 	
+	void PrimaryAttack();
+	void SecondaryAttack();
+	
 	TWeakObjectPtr<class AEixPlayerCharacter> EixPlayerCharacter;
 };

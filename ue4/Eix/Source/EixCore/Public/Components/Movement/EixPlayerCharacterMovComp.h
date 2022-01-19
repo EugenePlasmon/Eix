@@ -63,6 +63,8 @@ private:
 	
 	void PhysRolling(float DeltaTime, int32 Iterations);
 	void PhysicsRotationRolling(float DeltaTime);
+
+	float InterpRollingSpeedXY(float TargetRollingSpeedXY) const;
 #pragma endregion
 
 #pragma region Misc

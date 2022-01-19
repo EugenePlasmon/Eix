@@ -120,12 +120,8 @@ void UEixPlayerCharacterMovComp::PhysRolling(float DeltaTime, int32 Iterations)
 
 	// 2) Move character.
 	const float RelativeTime = CurrentRollingAccumulatedTime / RollingMaxDuration;
-	const float RollingSpeedXYInterpTime = RollingMaxDuration / 10.f;
 	const float TargetRollingSpeedXY = RollingSpeedCurve->GetFloatValue(RelativeTime);
-	const float RollingSpeedXYInterpAlpha = FMath::Clamp(CurrentRollingAccumulatedTime / RollingSpeedXYInterpTime,
-	                                                     0.f, 1.f);
-	const float CurrentRollingSpeedXY = FMath::Lerp(InitialRollingSpeedXY, TargetRollingSpeedXY,
-	                                                RollingSpeedXYInterpAlpha);
+	const float CurrentRollingSpeedXY = InterpRollingSpeedXY(TargetRollingSpeedXY);
 	const FVector Direction = EixPlayerCharacterOwner->GetActorForwardVector();
 	const FRotator Rotation = EixPlayerCharacterOwner->GetActorRotation();
 	const FVector CurrentRollingVelocity = CurrentRollingSpeedXY * Direction + CurrentRollingSpeedZ * FVector::UpVector;
@@ -207,4 +203,15 @@ bool UEixPlayerCharacterMovComp::SweepCharacterCapsuleSingleByChannel(FHitResult
 	const FQuat Quat = CapsuleComponent->GetComponentQuat();
 	const FCollisionShape Shape = FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight);
 	return GetWorld()->SweepSingleByChannel(OutHit, Start, End, Quat, Channel, Shape);
+}
+
+float UEixPlayerCharacterMovComp::InterpRollingSpeedXY(float TargetRollingSpeedXY) const
+{
+	// Start with initial speed, interp to target speed (from curve) in time RollingSpeedXYInitialInterpTime
+	const float RollingSpeedXYInitialInterpTime = RollingMaxDuration / 10.f;
+	const float RollingSpeedXYInitialInterpAlpha = FMath::GetMappedRangeValueClamped(
+		FVector2D(0.f, RollingSpeedXYInitialInterpTime),
+		FVector2D(0.f, 1.f), CurrentRollingAccumulatedTime
+	);
+	return FMath::Lerp(InitialRollingSpeedXY, TargetRollingSpeedXY, RollingSpeedXYInitialInterpAlpha);
 }

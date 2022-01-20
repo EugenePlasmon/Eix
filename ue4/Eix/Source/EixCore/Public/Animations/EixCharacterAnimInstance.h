@@ -48,6 +48,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement|In air")
 	float FallingSpeed;
+
+	/**
+	 * In world space.
+	 * This acceleration is not actual acceleration, but the one from unreal's movement component (computed by input vector)
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Calculated params|Movement")
+	FVector InputAcceleration;
 	
 	/**
 	 * In local space.

@@ -34,6 +34,7 @@ void UEixCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		// Set falling speed only when in air to save the last in-air speed value and use it in grounded state
 		FallingSpeed = CharacterMovement->Velocity.Z;
 	}
+	InputAcceleration = CharacterMovement->GetCurrentAcceleration();
 	RelativeAcceleration = CalculateRelativeAcceleration();
 	LeanAmount = CalculateLeanAmount(DeltaSeconds);
 	FootIKAnimParams = CalculateFootIKParams();

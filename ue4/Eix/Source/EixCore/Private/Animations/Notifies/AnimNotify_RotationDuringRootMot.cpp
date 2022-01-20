@@ -11,5 +11,5 @@ void UAnimNotify_RotationDuringRootMot::Notify(USkeletalMeshComponent* MeshComp,
 	if (IsValid(Character))
 	{
 		Character->GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = bEnable;
-	}		
+	}
 }

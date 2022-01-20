@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Types/Weapons/EixMeleeWeaponAttackConfig.h"
 #include "EixCharacterMeleeCombatComp.generated.h"
 
 class AEixPlayerCharacter;
@@ -21,41 +22,67 @@ protected:
 
 public:
 	// TODO: revisit this naming
+	UFUNCTION(BlueprintGetter)
 	bool IsAttackExecuting() const { return bIsPlayingAttack && !bCanHaltCombo; }
+	
+	UFUNCTION(BlueprintGetter)
 	bool IsAttackFading() const { return bIsPlayingAttack && bCanHaltCombo; }
-	bool IsPlayingAttack() const { return bIsPlayingAttack; } 
+	
+	UFUNCTION(BlueprintGetter)
+	bool IsPlayingAttack() const { return bIsPlayingAttack; }
+	
+	UFUNCTION(BlueprintGetter)
 	bool CanHaltCombo() const { return bCanHaltCombo; }
 
+	UFUNCTION(BlueprintCallable)
 	void PrimaryAttack();
+
+	UFUNCTION(BlueprintCallable)
 	void SecondaryAttack();
-	
-	void SetNextComboAttacks(FName In_NextComboPrimaryAttack, FName In_NextComboSecondaryAttack);
+
+	UFUNCTION(BlueprintCallable)
+	void SetStartComboAttack(FEixMeleeWeaponAttackConfig In_StartComboAttackConfig);
+
+	UFUNCTION(BlueprintCallable)
+	void OpenComboWindow(FEixMeleeWeaponAttackConfig In_NextComboAttackConfig);
+
+	UFUNCTION(BlueprintCallable)
+	void CloseComboWindow();
+
+	UFUNCTION(BlueprintCallable)
 	void ProceedCombo();
+
+	UFUNCTION(BlueprintCallable)
 	void ComboAttackReleased();
+
+	UFUNCTION(BlueprintCallable)
 	void HaltCombo(bool bForce = false);
 
-protected:
-	// TODO: to be replaced with weapon specific data
-	UPROPERTY(EditDefaultsOnly, Category="Eix")
-	UAnimMontage* ComboAnimMontage;
-
 private:
-	FName NextComboPrimaryAttack = NAME_None;
-	FName NextComboSecondaryAttack = NAME_None;
+	UPROPERTY()
+	FEixMeleeWeaponAttackConfig StartComboAttackConfig;
+	
+	UPROPERTY()
+	FEixMeleeWeaponAttackConfig NextComboAttackConfig;
+
+	UPROPERTY()
+	UAnimMontage* CurrentPlayingAttackMontage;
+	
 	bool bIsPlayingAttack = false;
 	bool bCanHaltCombo = false;
 	bool bCanExecuteAttack = true;
+	bool bInComboWindow = false;
 	bool bWantsExecuteNextComboPrimaryAttack = false;
 	bool bWantsExecuteNextComboSecondaryAttack = false;
 	void ResetAttackState();
 
-	FTimerHandle PlayingAttackTimer;
-
 	TWeakObjectPtr<AEixPlayerCharacter> EixCharacterOwner;
 
-	void ExecuteAttack(const FName& MontageSection);
+	UAnimMontage* GetPrimaryAttackMontage() const;
+	UAnimMontage* GetSecondaryAttackMontage() const;
 
-	float PlayAnimMontage(UAnimMontage* AnimMontage, FName Section) const;
+	void ExecuteAttack(UAnimMontage* AttackMontage);
+
 	UAnimInstance* GetOwnerAnimInstance() const;
 
 	UFUNCTION()

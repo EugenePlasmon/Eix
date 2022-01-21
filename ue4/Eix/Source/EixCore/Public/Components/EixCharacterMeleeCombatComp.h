@@ -35,10 +35,10 @@ public:
 	bool CanHaltCombo() const { return bCanHaltCombo; }
 
 	UFUNCTION(BlueprintCallable)
-	void PrimaryAttack();
+	void PrimaryAttack(EInputEvent InputEvent);
 
 	UFUNCTION(BlueprintCallable)
-	void SecondaryAttack();
+	void SecondaryAttack(EInputEvent InputEvent);
 
 	UFUNCTION(BlueprintCallable)
 	void SetStartComboAttack(FEixMeleeWeaponAttackConfig In_StartComboAttackConfig);
@@ -51,6 +51,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ProceedCombo();
+
+	UFUNCTION(BlueprintCallable)
+	void ProceedChargedAttack(UAnimMontage* KeepChargeMontage, UAnimMontage* ReleaseNowMontage);
+	
+	UFUNCTION(BlueprintCallable)
+	void ReleaseChargedAttack(UAnimMontage* ReleaseChargedAttack);
 
 	UFUNCTION(BlueprintCallable)
 	void ComboAttackReleased();
@@ -72,11 +78,15 @@ private:
 	bool bCanHaltCombo = false;
 	bool bCanExecuteAttack = true;
 	bool bInComboWindow = false;
+	bool bSecondaryAttackReleased = true;
 	bool bWantsExecuteNextComboPrimaryAttack = false;
 	bool bWantsExecuteNextComboSecondaryAttack = false;
 	void ResetAttackState();
 
 	TWeakObjectPtr<AEixPlayerCharacter> EixCharacterOwner;
+
+	void PerformPrimaryAttack();
+	void PerformSecondaryAttack();
 
 	UAnimMontage* GetPrimaryAttackMontage() const;
 	UAnimMontage* GetSecondaryAttackMontage() const;

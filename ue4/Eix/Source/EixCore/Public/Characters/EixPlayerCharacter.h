@@ -52,8 +52,8 @@ public:
 
 	virtual void Roll();
 
-	virtual void PrimaryAttack();
-	virtual void SecondaryAttack();
+	virtual void PrimaryAttack(EInputEvent InputEvent);
+	virtual void SecondaryAttack(EInputEvent InputEvent);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnStartRolling();

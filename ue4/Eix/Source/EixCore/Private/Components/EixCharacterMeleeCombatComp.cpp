@@ -13,37 +13,21 @@ void UEixCharacterMeleeCombatComp::BeginPlay()
 	GetOwnerAnimInstance()->OnMontageEnded.AddDynamic(this, &UEixCharacterMeleeCombatComp::OnMontageEnded);
 }
 
-void UEixCharacterMeleeCombatComp::PrimaryAttack()
+void UEixCharacterMeleeCombatComp::PrimaryAttack(EInputEvent InputEvent)
 {
-	if (bCanExecuteAttack)
+	if (InputEvent == IE_Pressed)
 	{
-		UAnimMontage* AttackMontage = GetPrimaryAttackMontage();
-		if (IsValid(AttackMontage))
-		{
-			ExecuteAttack(AttackMontage);
-		}
-	}
-	else if (bInComboWindow)
-	{
-		bWantsExecuteNextComboPrimaryAttack = true;
-		bWantsExecuteNextComboSecondaryAttack = false;
+		PerformPrimaryAttack();
 	}
 }
 
-void UEixCharacterMeleeCombatComp::SecondaryAttack()
+void UEixCharacterMeleeCombatComp::SecondaryAttack(EInputEvent InputEvent)
 {
-	if (bCanExecuteAttack)
+	bSecondaryAttackReleased = InputEvent == IE_Released;
+	
+	if (InputEvent == IE_Pressed)
 	{
-		UAnimMontage* AttackMontage = GetSecondaryAttackMontage();
-		if (IsValid(AttackMontage))
-		{
-			ExecuteAttack(AttackMontage);
-		}
-	}
-	else if (bInComboWindow)
-	{
-		bWantsExecuteNextComboPrimaryAttack = false;
-		bWantsExecuteNextComboSecondaryAttack = true;
+		PerformSecondaryAttack();
 	}
 }
 
@@ -70,12 +54,29 @@ void UEixCharacterMeleeCombatComp::ProceedCombo()
 	bCanExecuteAttack = true;
 	if (bWantsExecuteNextComboPrimaryAttack)
 	{
-		PrimaryAttack();
+		PerformPrimaryAttack();
 	}
 	else if (bWantsExecuteNextComboSecondaryAttack)
 	{
-		SecondaryAttack();
+		PerformSecondaryAttack();
 	}
+}
+
+void UEixCharacterMeleeCombatComp::ProceedChargedAttack(UAnimMontage* KeepChargeMontage, UAnimMontage* ReleaseNowMontage)
+{
+	if (bSecondaryAttackReleased)
+	{
+		ExecuteAttack(ReleaseNowMontage);
+	}
+	else
+	{
+		ExecuteAttack(KeepChargeMontage);
+	}
+}
+
+void UEixCharacterMeleeCombatComp::ReleaseChargedAttack(UAnimMontage* ReleaseChargedAttack)
+{
+	ExecuteAttack(ReleaseChargedAttack);
 }
 
 void UEixCharacterMeleeCombatComp::ComboAttackReleased()
@@ -96,12 +97,48 @@ void UEixCharacterMeleeCombatComp::ResetAttackState()
 {
 	NextComboAttackConfig.PrimaryAttackMontage = nullptr;
 	NextComboAttackConfig.SecondaryAttackMontage = nullptr;
+	CurrentPlayingAttackMontage = nullptr;
 	bIsPlayingAttack = false;
 	bCanHaltCombo = false;
 	bCanExecuteAttack = true;
 	bInComboWindow = false;
+	bSecondaryAttackReleased = true;
 	bWantsExecuteNextComboPrimaryAttack = false;
 	bWantsExecuteNextComboSecondaryAttack = false;
+}
+
+void UEixCharacterMeleeCombatComp::PerformPrimaryAttack()
+{
+	if (bCanExecuteAttack)
+	{
+		UAnimMontage* AttackMontage = GetPrimaryAttackMontage();
+		if (IsValid(AttackMontage))
+		{
+			ExecuteAttack(AttackMontage);
+		}
+	}
+	else if (bInComboWindow)
+	{
+		bWantsExecuteNextComboPrimaryAttack = true;
+		bWantsExecuteNextComboSecondaryAttack = false;
+	}
+}
+
+void UEixCharacterMeleeCombatComp::PerformSecondaryAttack()
+{
+	if (bCanExecuteAttack)
+	{
+		UAnimMontage* AttackMontage = GetSecondaryAttackMontage();
+		if (IsValid(AttackMontage))
+		{
+			ExecuteAttack(AttackMontage);
+		}
+	}
+	else if (bInComboWindow)
+	{
+		bWantsExecuteNextComboPrimaryAttack = false;
+		bWantsExecuteNextComboSecondaryAttack = true;
+	}
 }
 
 UAnimMontage* UEixCharacterMeleeCombatComp::GetPrimaryAttackMontage() const
@@ -150,6 +187,10 @@ UAnimInstance* UEixCharacterMeleeCombatComp::GetOwnerAnimInstance() const
 
 void UEixCharacterMeleeCombatComp::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	if (!IsValid(CurrentPlayingAttackMontage))
+	{
+		return;
+	}
 	if (!bInterrupted && Montage->GetPrimaryAssetId() == CurrentPlayingAttackMontage->GetPrimaryAssetId())
 	{
 		ResetAttackState();

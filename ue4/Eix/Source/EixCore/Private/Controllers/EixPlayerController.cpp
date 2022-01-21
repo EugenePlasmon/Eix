@@ -20,8 +20,9 @@ void AEixPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Walk"), IE_Pressed, this, &AEixPlayerController::StartWalk);
 	InputComponent->BindAction(TEXT("Walk"), IE_Released, this, &AEixPlayerController::StopWalk);
 	InputComponent->BindAction(TEXT("Roll"), IE_Pressed, this, &AEixPlayerController::Roll);
-	InputComponent->BindAction(TEXT("PrimaryAttack"), IE_Pressed, this, &AEixPlayerController::PrimaryAttack);
-	InputComponent->BindAction(TEXT("SecondaryAttack"), IE_Pressed, this, &AEixPlayerController::SecondaryAttack);
+	InputComponent->BindAction(TEXT("PrimaryAttack"), IE_Pressed, this, &AEixPlayerController::PrimaryAttack_Pressed);
+	InputComponent->BindAction(TEXT("SecondaryAttack"), IE_Pressed, this, &AEixPlayerController::SecondaryAttack_Pressed);
+	InputComponent->BindAction(TEXT("SecondaryAttack"), IE_Released, this, &AEixPlayerController::SecondaryAttack_Released);
 }
 
 void AEixPlayerController::MoveForward(float Value)
@@ -96,18 +97,26 @@ void AEixPlayerController::Roll()
 	}
 }
 
-void AEixPlayerController::PrimaryAttack()
+void AEixPlayerController::PrimaryAttack_Pressed()
 {
 	if (EixPlayerCharacter.IsValid())
 	{
-		EixPlayerCharacter->PrimaryAttack();
+		EixPlayerCharacter->PrimaryAttack(IE_Pressed);
 	}
 }
 
-void AEixPlayerController::SecondaryAttack()
+void AEixPlayerController::SecondaryAttack_Pressed()
 {
 	if (EixPlayerCharacter.IsValid())
 	{
-		EixPlayerCharacter->SecondaryAttack();
+		EixPlayerCharacter->SecondaryAttack(IE_Pressed);
+	}
+}
+
+void AEixPlayerController::SecondaryAttack_Released()
+{
+	if (EixPlayerCharacter.IsValid())
+	{
+		EixPlayerCharacter->SecondaryAttack(IE_Released);
 	}
 }

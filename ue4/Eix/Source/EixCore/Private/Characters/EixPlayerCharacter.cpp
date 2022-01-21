@@ -128,19 +128,19 @@ void AEixPlayerCharacter::Roll()
 	OnStartRolling();
 }
 
-void AEixPlayerCharacter::PrimaryAttack()
+void AEixPlayerCharacter::PrimaryAttack(EInputEvent InputEvent)
 {
 	if (CanMeleeAttack())
 	{
-		MeleeCombatComp->PrimaryAttack();
+		MeleeCombatComp->PrimaryAttack(InputEvent);
 	}
 }
 
-void AEixPlayerCharacter::SecondaryAttack()
+void AEixPlayerCharacter::SecondaryAttack(EInputEvent InputEvent)
 {
 	if (CanMeleeAttack())
 	{
-		MeleeCombatComp->SecondaryAttack();
+		MeleeCombatComp->SecondaryAttack(InputEvent);
 	}
 }
 

@@ -10,5 +10,5 @@ void UAnimNotify_WindowForNextRolling::Notify(USkeletalMeshComponent* MeshComp, 
 	if (IsValid(PlayerCharacter))
 	{
 		PlayerCharacter->GetEixPlayerCharacterMovement()->OpenWindowForNextRolling();
-	}	
+	}
 }

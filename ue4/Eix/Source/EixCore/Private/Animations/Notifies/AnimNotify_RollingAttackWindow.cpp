@@ -10,5 +10,5 @@ void UAnimNotify_RollingAttackWindow::Notify(USkeletalMeshComponent* MeshComp, U
 	if (IsValid(PlayerCharacter))
 	{
 		PlayerCharacter->GetMeleeCombatComp()->OpenRollingAttackWindow();
-	}	
+	}
 }

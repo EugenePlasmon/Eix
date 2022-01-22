@@ -39,6 +39,10 @@ void UEixCharacterMeleeCombatComp::PrimaryAttack(const FEixMeleeAttackPerforming
 		&& bInRollingAttackWindow)
 	{
 		bWantsExecutePrimaryAttackAfterRolling = true;
+		if (bCanExecuteAttackWhileRolling)
+		{
+			ProceedRollingAttack();
+		}
 	}
 }
 
@@ -68,6 +72,10 @@ void UEixCharacterMeleeCombatComp::SecondaryAttack(const FEixMeleeAttackPerformi
 		&& bInRollingAttackWindow)
 	{
 		bWantsExecuteSecondaryAttackAfterRolling = true;
+		if (bCanExecuteAttackWhileRolling)
+		{
+			ProceedRollingAttack();
+		}
 	}
 }
 
@@ -123,6 +131,24 @@ void UEixCharacterMeleeCombatComp::ProceedChargedAttack(UAnimMontage* KeepCharge
 	}
 }
 
+void UEixCharacterMeleeCombatComp::ProceedRollingAttack()
+{
+	if (bWantsExecutePrimaryAttackAfterRolling)
+	{
+		EixCharacterOwner->GetEixPlayerCharacterMovement()->StopRolling();
+		ExecuteAttack(RightAfterRollAttackConfig.PrimaryAttackMontage);
+	}
+	else if (bWantsExecuteSecondaryAttackAfterRolling)
+	{
+		EixCharacterOwner->GetEixPlayerCharacterMovement()->StopRolling();
+		ExecuteAttack(RightAfterRollAttackConfig.SecondaryAttackMontage);
+	}
+	else
+	{
+		bCanExecuteAttackWhileRolling = true;
+	}
+}
+
 void UEixCharacterMeleeCombatComp::ReleaseChargedAttack(UAnimMontage* ReleaseChargedAttack)
 {
 	ExecuteAttack(ReleaseChargedAttack);
@@ -151,10 +177,11 @@ void UEixCharacterMeleeCombatComp::ResetAttackState()
 	bCanHaltCombo = false;
 	bCanExecuteAttack = true;
 	bInComboWindow = false;
-	bInRollingAttackWindow = false;
 	bSecondaryAttackReleased = true;
 	bWantsExecuteNextComboPrimaryAttack = false;
 	bWantsExecuteNextComboSecondaryAttack = false;
+	bInRollingAttackWindow = false;
+	bCanExecuteAttackWhileRolling = false;
 	bWantsExecutePrimaryAttackAfterRolling = false;
 	bWantsExecuteSecondaryAttackAfterRolling = false;
 }
@@ -217,9 +244,10 @@ void UEixCharacterMeleeCombatComp::ExecuteAttack(UAnimMontage* AttackMontage)
 	bCanHaltCombo = false;
 	bCanExecuteAttack = false;
 	bInComboWindow = false;
-	bInRollingAttackWindow = false;
 	bWantsExecuteNextComboPrimaryAttack = false;
 	bWantsExecuteNextComboSecondaryAttack = false;
+	bInRollingAttackWindow = false;
+	bCanExecuteAttackWhileRolling = false;
 	bWantsExecutePrimaryAttackAfterRolling = false;
 	bWantsExecuteSecondaryAttackAfterRolling = false;
 	CurrentPlayingAttackMontage = AttackMontage;
@@ -250,13 +278,6 @@ void UEixCharacterMeleeCombatComp::OnMovementStateChanged(EEixMovementState Prev
 	if (PrevMovementState == EEixMovementState::Rolling && NewMovementState == EEixMovementState::OnGround)
 	{
 		bInRollingAttackWindow = false;
-		if (bWantsExecutePrimaryAttackAfterRolling)
-		{
-			ExecuteAttack(RightAfterRollAttackConfig.PrimaryAttackMontage);
-		}
-		else if (bWantsExecuteSecondaryAttackAfterRolling)
-		{
-			ExecuteAttack(RightAfterRollAttackConfig.SecondaryAttackMontage);
-		}
+		bCanExecuteAttackWhileRolling = false;
 	}
 }

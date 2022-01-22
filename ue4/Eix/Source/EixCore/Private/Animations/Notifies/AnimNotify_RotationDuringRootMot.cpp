@@ -1,5 +1,4 @@
 #include "Animations/Notifies/AnimNotify_RotationDuringRootMot.h"
-
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 

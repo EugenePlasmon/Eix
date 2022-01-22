@@ -60,6 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ProceedChargedAttack(UAnimMontage* KeepChargeMontage, UAnimMontage* ReleaseNowMontage);
+
+	UFUNCTION(BlueprintCallable)
+	void ProceedRollingAttack();
 	
 	UFUNCTION(BlueprintCallable)
 	void ReleaseChargedAttack(UAnimMontage* ReleaseChargedAttack);
@@ -90,10 +93,11 @@ private:
 	bool bCanHaltCombo = false;
 	bool bCanExecuteAttack = true;
 	bool bInComboWindow = false;
-	bool bInRollingAttackWindow = false;
 	bool bSecondaryAttackReleased = true;
 	bool bWantsExecuteNextComboPrimaryAttack = false;
 	bool bWantsExecuteNextComboSecondaryAttack = false;
+	bool bInRollingAttackWindow = false;
+	bool bCanExecuteAttackWhileRolling = false;
 	bool bWantsExecutePrimaryAttackAfterRolling = false;
 	bool bWantsExecuteSecondaryAttackAfterRolling = false;
 	void ResetAttackState();

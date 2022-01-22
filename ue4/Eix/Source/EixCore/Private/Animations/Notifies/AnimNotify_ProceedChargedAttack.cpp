@@ -10,5 +10,5 @@ void UAnimNotify_ProceedChargedAttack::Notify(USkeletalMeshComponent* MeshComp, 
 	if (IsValid(PlayerCharacter))
 	{
 		PlayerCharacter->GetMeleeCombatComp()->ProceedChargedAttack(KeepChargeMontage, ReleaseNowMontage);
-	}	
+	}
 }

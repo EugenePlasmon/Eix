@@ -43,6 +43,10 @@ public:
 	bool CanAttemptRolling() const;
 	void AttemptRolling();
 
+	bool CanStartRolling() const;
+	void StartRolling();
+	void StopRolling();
+
 	void OpenWindowForNextRolling();
 
 protected:
@@ -56,10 +60,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Eix|Rolling")
 	float RollingMaxDuration;
-
-	bool CanStartRolling() const;
-	void StartRolling();
-	void StopRolling();
 
 private:
 	bool bInWindowForNextRolling = false;

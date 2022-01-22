@@ -24,6 +24,16 @@ void UEixPlayerCharacterMovComp::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UEixPlayerCharacterMovComp::UpdateCharacterStateBeforeMovement(float DeltaSeconds)
+{
+	Super::UpdateCharacterStateBeforeMovement(DeltaSeconds);
+
+	if (bWantsToStartRolling && CanStartRolling())
+	{
+		StartRolling();
+	}
+}
+
 void UEixPlayerCharacterMovComp::PhysCustom(float DeltaTime, int32 Iterations)
 {
 	if (MovementMode == MOVE_Custom)
@@ -63,6 +73,24 @@ bool UEixPlayerCharacterMovComp::IsRolling() const
 	return MovementMode == MOVE_Custom && CustomMovementMode == CMOVE_Rolling;
 }
 
+bool UEixPlayerCharacterMovComp::CanAttemptRolling() const
+{
+	return CanStartRolling() || (IsRolling() && bInWindowForNextRolling);
+}
+
+void UEixPlayerCharacterMovComp::AttemptRolling()
+{
+	if (CanAttemptRolling())
+	{
+		bWantsToStartRolling = true;
+	}
+}
+
+void UEixPlayerCharacterMovComp::OpenWindowForNextRolling()
+{
+	bInWindowForNextRolling = true;
+}
+
 bool UEixPlayerCharacterMovComp::CanStartRolling() const
 {
 	return IsMovingOnGround();
@@ -79,6 +107,8 @@ void UEixPlayerCharacterMovComp::StartRolling()
 	CurrentRollingAccumulatedTime = 0.f;
 	Velocity = FVector::ZeroVector;
 
+	bWantsToStartRolling = false;
+
 	GetWorld()->GetTimerManager().SetTimer(RollingTimer, FTimerDelegate::CreateLambda([this]
 	{
 		if (IsValid(this))
@@ -88,6 +118,8 @@ void UEixPlayerCharacterMovComp::StartRolling()
 	}), RollingMaxDuration, false);
 
 	SetMovementMode(MOVE_Custom, CMOVE_Rolling);
+
+	EixPlayerCharacterOwner->OnStartRolling();
 }
 
 void UEixPlayerCharacterMovComp::StopRolling()
@@ -96,6 +128,9 @@ void UEixPlayerCharacterMovComp::StopRolling()
 	{
 		return;
 	}
+	
+	bInWindowForNextRolling = false;
+	
 	// We're sure we stop rolling on ground, so here we always enable MOVE_Walking.
 	// If rolling ends in air, we would have already found it in PhysRolling(...) at sweep tests
 	SetMovementMode(MOVE_Walking);

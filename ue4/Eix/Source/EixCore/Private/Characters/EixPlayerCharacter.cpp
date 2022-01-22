@@ -110,7 +110,7 @@ void AEixPlayerCharacter::StopWalk()
 
 void AEixPlayerCharacter::Roll()
 {
-	if (!EixPlayerCharacterMovement->CanStartRolling())
+	if (!EixPlayerCharacterMovement->CanAttemptRolling())
 	{
 		return;
 	}
@@ -119,13 +119,13 @@ void AEixPlayerCharacter::Roll()
 	{
 		return;
 	}
+	
 	if (MeleeCombatComp->IsAttackFading())
 	{
 		MeleeCombatComp->HaltCombo();
 	}
 	
-	EixPlayerCharacterMovement->StartRolling();
-	OnStartRolling();
+	EixPlayerCharacterMovement->AttemptRolling();
 }
 
 void AEixPlayerCharacter::PrimaryAttack(EInputEvent InputEvent)

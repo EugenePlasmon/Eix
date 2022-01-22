@@ -22,6 +22,8 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	virtual void UpdateCharacterStateBeforeMovement(float DeltaSeconds) override;
+
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
 
 	virtual void PhysicsRotation(float DeltaTime) override;
@@ -38,9 +40,10 @@ private:
 #pragma region Rolling
 public:
 	bool IsRolling() const;
-	bool CanStartRolling() const;
-	void StartRolling();
-	void StopRolling();
+	bool CanAttemptRolling() const;
+	void AttemptRolling();
+
+	void OpenWindowForNextRolling();
 
 protected:
 	/* Timeline's X axis is scaled to range [0, 1] */
@@ -53,14 +56,20 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Eix|Rolling")
 	float RollingMaxDuration;
-	
+
+	bool CanStartRolling() const;
+	void StartRolling();
+	void StopRolling();
+
 private:
+	bool bInWindowForNextRolling = false;
+	bool bWantsToStartRolling = false;
 	float InitialRollingSpeedXY = 0.f;
 	float CurrentRollingSpeedZ = 0.f;
 	float CurrentRollingAccumulatedTime = 0.f;
 
 	FTimerHandle RollingTimer;
-	
+
 	void PhysRolling(float DeltaTime, int32 Iterations);
 	void PhysicsRotationRolling(float DeltaTime);
 

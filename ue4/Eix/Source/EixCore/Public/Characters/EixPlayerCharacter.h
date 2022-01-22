@@ -64,5 +64,4 @@ protected:
 	virtual EEixGait GetCurrentAllowedGait() const override;
 
 	bool CanSprint() const;
-	bool CanMeleeAttack() const;
 };

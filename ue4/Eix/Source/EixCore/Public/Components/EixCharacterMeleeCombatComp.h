@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Types/Weapons/EixMeleeAttackPerformingInfo.h"
 #include "Types/Weapons/EixMeleeWeaponAttackConfig.h"
 #include "EixCharacterMeleeCombatComp.generated.h"
 
@@ -35,19 +36,24 @@ public:
 	bool CanHaltCombo() const { return bCanHaltCombo; }
 
 	UFUNCTION(BlueprintCallable)
-	void PrimaryAttack(EInputEvent InputEvent);
+	void PrimaryAttack(const FEixMeleeAttackPerformingInfo& Info);
 
 	UFUNCTION(BlueprintCallable)
-	void SecondaryAttack(EInputEvent InputEvent);
+	void SecondaryAttack(const FEixMeleeAttackPerformingInfo& Info);
 
 	UFUNCTION(BlueprintCallable)
-	void SetStartComboAttack(FEixMeleeWeaponAttackConfig In_StartComboAttackConfig);
+	void SetInitialAttacks(FEixMeleeWeaponAttackConfig In_StartComboAttackConfig,
+	                       FEixMeleeWeaponAttackConfig In_OnRunAttackConfig,
+	                       FEixMeleeWeaponAttackConfig In_RightAfterRollAttackConfig);
 
 	UFUNCTION(BlueprintCallable)
 	void OpenComboWindow(FEixMeleeWeaponAttackConfig In_NextComboAttackConfig);
 
 	UFUNCTION(BlueprintCallable)
 	void CloseComboWindow();
+
+	UFUNCTION(BlueprintCallable)
+	void OpenRollingAttackWindow();
 
 	UFUNCTION(BlueprintCallable)
 	void ProceedCombo();
@@ -72,15 +78,24 @@ private:
 	FEixMeleeWeaponAttackConfig NextComboAttackConfig;
 
 	UPROPERTY()
+	FEixMeleeWeaponAttackConfig OnRunAttackConfig;
+	
+	UPROPERTY()
+	FEixMeleeWeaponAttackConfig RightAfterRollAttackConfig;
+	
+	UPROPERTY()
 	UAnimMontage* CurrentPlayingAttackMontage;
 	
 	bool bIsPlayingAttack = false;
 	bool bCanHaltCombo = false;
 	bool bCanExecuteAttack = true;
 	bool bInComboWindow = false;
+	bool bInRollingAttackWindow = false;
 	bool bSecondaryAttackReleased = true;
 	bool bWantsExecuteNextComboPrimaryAttack = false;
 	bool bWantsExecuteNextComboSecondaryAttack = false;
+	bool bWantsExecutePrimaryAttackAfterRolling = false;
+	bool bWantsExecuteSecondaryAttackAfterRolling = false;
 	void ResetAttackState();
 
 	TWeakObjectPtr<AEixPlayerCharacter> EixCharacterOwner;
@@ -97,4 +112,7 @@ private:
 
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void OnMovementStateChanged(EEixMovementState PrevMovementState, EEixMovementState NewMovementState);
 };

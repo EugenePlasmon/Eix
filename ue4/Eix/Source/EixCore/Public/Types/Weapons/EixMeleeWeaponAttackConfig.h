@@ -8,6 +8,12 @@ struct FEixMeleeWeaponAttackConfig
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* PrimaryAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* SecondaryAttackMontage;
+
 	FEixMeleeWeaponAttackConfig(): PrimaryAttackMontage(nullptr), SecondaryAttackMontage(nullptr)
 	{
 	}
@@ -16,10 +22,4 @@ struct FEixMeleeWeaponAttackConfig
 		: PrimaryAttackMontage(PrimaryAttackMontage), SecondaryAttackMontage(SecondaryAttackMontage)
 	{
 	}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* PrimaryAttackMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* SecondaryAttackMontage;
 };

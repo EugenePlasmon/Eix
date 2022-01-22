@@ -9,6 +9,10 @@
 
 class AEixCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMovementStateChangedSignature,
+                                             EEixMovementState, PrevMovementState,
+                                             EEixMovementState, NewMovementState);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class EIXCORE_API UEixCharacterMovComp : public UCharacterMovementComponent
 {
@@ -19,7 +23,6 @@ public:
 
 #pragma region Overriden
 protected:
-
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
@@ -30,6 +33,8 @@ protected:
 
 #pragma region Properties
 public:
+	FMovementStateChangedSignature OnMovementStateChanged;
+	
 	AEixCharacter* GetEixCharacterOwner() const { return EixCharacterOwner.Get(); }
 	
 	EEixMovementState GetMovementState() const { return EixMovementState; }
@@ -57,6 +62,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	EEixMovementState EixMovementState = EEixMovementState::None;
+
+	void SetMovementState(EEixMovementState NewMovementState);
 	
 private:
 	EEixGait CurrentGait = EEixGait::Jog;

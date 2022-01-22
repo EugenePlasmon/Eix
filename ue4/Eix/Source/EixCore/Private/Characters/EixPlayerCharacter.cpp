@@ -26,7 +26,7 @@ void AEixPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, 
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
 
-	if (!CanMeleeAttack() && MeleeCombatComp->IsPlayingAttack())
+	if (MeleeCombatComp->IsPlayingAttack())
 	{
 		MeleeCombatComp->HaltCombo(true);
 	}
@@ -130,18 +130,22 @@ void AEixPlayerCharacter::Roll()
 
 void AEixPlayerCharacter::PrimaryAttack(EInputEvent InputEvent)
 {
-	if (CanMeleeAttack())
-	{
-		MeleeCombatComp->PrimaryAttack(InputEvent);
-	}
+	const FEixMeleeAttackPerformingInfo Info(
+		InputEvent, EixPlayerCharacterMovement->GetMovementState(),
+		EixPlayerCharacterMovement->GetCurrentActualGait(),
+		EixPlayerCharacterMovement->GetCurrentAcceleration()
+	);
+	MeleeCombatComp->PrimaryAttack(Info);
 }
 
 void AEixPlayerCharacter::SecondaryAttack(EInputEvent InputEvent)
 {
-	if (CanMeleeAttack())
-	{
-		MeleeCombatComp->SecondaryAttack(InputEvent);
-	}
+	const FEixMeleeAttackPerformingInfo Info(
+		InputEvent, EixPlayerCharacterMovement->GetMovementState(),
+		EixPlayerCharacterMovement->GetCurrentActualGait(),
+		EixPlayerCharacterMovement->GetCurrentAcceleration()
+	);
+	MeleeCombatComp->SecondaryAttack(Info);
 }
 
 FRotator AEixPlayerCharacter::GetAimOffset() const
@@ -161,9 +165,4 @@ EEixGait AEixPlayerCharacter::GetCurrentAllowedGait() const
 bool AEixPlayerCharacter::CanSprint() const
 {
 	return !EixPlayerCharacterMovement->GetCurrentAcceleration().IsNearlyZero();
-}
-
-bool AEixPlayerCharacter::CanMeleeAttack() const
-{
-	return EixPlayerCharacterMovement->IsMovingOnGround();
 }

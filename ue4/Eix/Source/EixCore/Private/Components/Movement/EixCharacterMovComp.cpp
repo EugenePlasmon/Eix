@@ -31,18 +31,18 @@ void UEixCharacterMovComp::OnMovementModeChanged(EMovementMode PreviousMovementM
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
 	if (IsMovingOnGround())
 	{
-		EixMovementState = EEixMovementState::OnGround;
+		SetMovementState(EEixMovementState::OnGround);
 	}
 	else if (IsFalling())
 	{
-		EixMovementState = EEixMovementState::InAir;
+		SetMovementState(EEixMovementState::InAir);
 	}
 	else if (MovementMode == MOVE_Custom)
 	{
 		switch (CustomMovementMode)
 		{
 		case CMOVE_Rolling:
-			EixMovementState = EEixMovementState::Rolling;
+			SetMovementState(EEixMovementState::Rolling);
 			break;
 		default:
 			break;
@@ -76,6 +76,21 @@ void UEixCharacterMovComp::SetCurrentGait(EEixGait In_CurrentGait)
 	}
 	CurrentGait = In_CurrentGait;
 	MaxWalkSpeed = MovementSpecs.GetMaxSpeedForGait(CurrentGait);
+}
+
+void UEixCharacterMovComp::SetMovementState(EEixMovementState NewMovementState)
+{
+	if (NewMovementState == EixMovementState)
+	{
+		return;
+	}
+
+	const EEixMovementState PrevMovementState = EixMovementState;
+	EixMovementState = NewMovementState;
+	if (OnMovementStateChanged.IsBound())
+	{
+		OnMovementStateChanged.Broadcast(PrevMovementState, NewMovementState);
+	}
 }
 
 void UEixCharacterMovComp::CacheCharacterOwner()

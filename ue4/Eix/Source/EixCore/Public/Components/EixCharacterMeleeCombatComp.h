@@ -8,6 +8,48 @@
 
 class AEixPlayerCharacter;
 
+USTRUCT()
+struct FEixMeleeAttackState
+{
+	GENERATED_BODY()
+	
+	uint8 bCanExecuteAttack:1;
+	uint8 bIsPlayingAttack:1;
+	uint8 bSecondaryAttackReleased:1;
+	
+	uint8 bInComboWindow:1;
+	uint8 bCanHaltCombo:1;
+	uint8 bWantsExecuteNextComboPrimaryAttack:1;
+	uint8 bWantsExecuteNextComboSecondaryAttack:1;
+	
+	uint8 bInRollingAttackWindow:1;
+	uint8 bCanExecuteAttackWhileRolling:1;
+	uint8 bWantsExecutePrimaryAttackAfterRolling:1;
+	uint8 bWantsExecuteSecondaryAttackAfterRolling:1;
+
+	FEixMeleeAttackState()
+	{
+		Reset();
+	}
+	
+	void Reset()
+	{
+		bCanExecuteAttack = true;
+		bIsPlayingAttack = false;
+		bSecondaryAttackReleased = true;
+		
+		bInComboWindow = false;
+		bCanHaltCombo = false;
+		bWantsExecuteNextComboPrimaryAttack = false;
+		bWantsExecuteNextComboSecondaryAttack = false;
+		
+		bInRollingAttackWindow = false;
+		bCanExecuteAttackWhileRolling = false;
+		bWantsExecutePrimaryAttackAfterRolling = false;
+		bWantsExecuteSecondaryAttackAfterRolling = false;
+	}
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class EIXCORE_API UEixCharacterMeleeCombatComp : public UActorComponent
 {
@@ -24,16 +66,16 @@ protected:
 public:
 	// TODO: revisit this naming
 	UFUNCTION(BlueprintGetter)
-	bool IsAttackExecuting() const { return bIsPlayingAttack && !bCanHaltCombo; }
+	bool IsAttackExecuting() const { return State.bIsPlayingAttack && !State.bCanHaltCombo; }
 	
 	UFUNCTION(BlueprintGetter)
-	bool IsAttackFading() const { return bIsPlayingAttack && bCanHaltCombo; }
+	bool IsAttackFading() const { return State.bIsPlayingAttack && State.bCanHaltCombo; }
 	
 	UFUNCTION(BlueprintGetter)
-	bool IsPlayingAttack() const { return bIsPlayingAttack; }
+	bool IsPlayingAttack() const { return State.bIsPlayingAttack; }
 	
 	UFUNCTION(BlueprintGetter)
-	bool CanHaltCombo() const { return bCanHaltCombo; }
+	bool CanHaltCombo() const { return State.bCanHaltCombo; }
 
 	UFUNCTION(BlueprintCallable)
 	void PrimaryAttack(const FEixMeleeAttackPerformingInfo& Info);
@@ -74,33 +116,15 @@ public:
 	void HaltCombo(bool bForce = false);
 
 private:
-	UPROPERTY()
+	FEixMeleeAttackState State;
+	
 	FEixMeleeWeaponAttackConfig StartComboAttackConfig;
-	
-	UPROPERTY()
 	FEixMeleeWeaponAttackConfig NextComboAttackConfig;
-
-	UPROPERTY()
 	FEixMeleeWeaponAttackConfig OnRunAttackConfig;
-	
-	UPROPERTY()
 	FEixMeleeWeaponAttackConfig RightAfterRollAttackConfig;
 	
 	UPROPERTY()
 	UAnimMontage* CurrentPlayingAttackMontage;
-	
-	bool bIsPlayingAttack = false;
-	bool bCanHaltCombo = false;
-	bool bCanExecuteAttack = true;
-	bool bInComboWindow = false;
-	bool bSecondaryAttackReleased = true;
-	bool bWantsExecuteNextComboPrimaryAttack = false;
-	bool bWantsExecuteNextComboSecondaryAttack = false;
-	bool bInRollingAttackWindow = false;
-	bool bCanExecuteAttackWhileRolling = false;
-	bool bWantsExecutePrimaryAttackAfterRolling = false;
-	bool bWantsExecuteSecondaryAttackAfterRolling = false;
-	void ResetAttackState();
 
 	TWeakObjectPtr<AEixPlayerCharacter> EixCharacterOwner;
 

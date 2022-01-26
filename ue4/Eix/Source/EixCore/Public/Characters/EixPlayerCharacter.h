@@ -38,6 +38,16 @@ protected:
 	UEixCharacterMeleeCombatComp* MeleeCombatComp;
 #pragma endregion
 
+// TODO: will be in the EquipmentComponent class
+public:
+	class AEixMeleeWeapon* GetMeleeWeapon() const { return MeleeWeapon; }
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Eix")
+	TSubclassOf<class AEixMeleeWeapon> MeleeWeaponClass;
+private:
+	UPROPERTY()
+	class AEixMeleeWeapon* MeleeWeapon;
+
 public:
 	virtual void MoveForward(float Value);
 	virtual void MoveRight(float Value);

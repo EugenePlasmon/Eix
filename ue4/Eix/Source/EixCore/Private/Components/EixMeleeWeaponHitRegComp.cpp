@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Subsystems/DebugSubsystem.h"
 #include "Utils/EixTraceUtils.h"
+#include "Types/EixCollisionTypes.h"
 
 UEixMeleeWeaponHitRegComp::UEixMeleeWeaponHitRegComp()
 {
@@ -91,7 +92,7 @@ void UEixMeleeWeaponHitRegComp::ProcessHitRegistration(
 		const float Radius = In_CollidersCurrentInfo[n].Radius;
 		const bool bDrawDebug = GetWorld()->GetGameInstance()->GetSubsystem<UDebugSubsystem>()
 		                                  ->IsDebugCategoryEnabled(DebugCategory::MeleeHitRegistration);
-
+		
 		TArray<FHitResult> ColliderHits;
 		const bool bGotHit = EixTraceUtils::SweepSphereMultiByChannel(
 			GetWorld(),
@@ -99,7 +100,7 @@ void UEixMeleeWeaponHitRegComp::ProcessHitRegistration(
 			PreviousLocation,
 			CurrentLocation,
 			Radius,
-			ECC_Pawn, // TODO: Make custom trace channel ECC_Melee
+			ECC_Melee,
 			EixTraceUtils::DebugDrawParams(bDrawDebug, FColor::Green, FColor::Red, 3.f),
 			CollisionQueryParams
 		);

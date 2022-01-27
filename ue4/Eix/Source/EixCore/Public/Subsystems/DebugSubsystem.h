@@ -7,6 +7,7 @@
 namespace DebugCategory
 {
 	extern const FName IKCharacter;
+	extern const FName MeleeHitRegistration;
 
 	extern const FName All;
 }

@@ -3,12 +3,14 @@
 namespace DebugCategory
 {
 	extern const FName IKCharacter("IKCharacter");
+	extern const FName MeleeHitRegistration("MeleeHitRegistration");
 
 	extern const FName All("All");
 
 	TArray<FName> AllCategories =
 	{
-		IKCharacter
+		IKCharacter,
+		MeleeHitRegistration
 	};
 }
 

@@ -1,7 +1,7 @@
 ﻿#include "Characters/EixPlayerCharacter.h"
-
 #include "Components/Movement/EixPlayerCharacterMovComp.h"
 #include "Components/EixCharacterMeleeCombatComp.h"
+#include "Actors/Weapons/EixMeleeWeapon.h"
 
 AEixPlayerCharacter::AEixPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer
@@ -20,6 +20,16 @@ void AEixPlayerCharacter::Tick(float DeltaTime)
 void AEixPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsValid(MeleeWeaponClass))
+	{
+		AEixMeleeWeapon* InstancedMeleeWeapon = GetWorld()->SpawnActor<AEixMeleeWeapon>(MeleeWeaponClass);
+		MeleeWeapon = InstancedMeleeWeapon;
+		MeleeWeapon->SetOwner(this);
+		MeleeWeapon->AttachToComponent(GetMesh(),
+									   FAttachmentTransformRules::KeepRelativeTransform,
+									   FName("RightHandWeapon_Socket"));
+	}
 }
 
 void AEixPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)

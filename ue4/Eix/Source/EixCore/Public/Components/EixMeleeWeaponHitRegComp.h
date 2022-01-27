@@ -4,6 +4,8 @@
 #include "Components/ActorComponent.h"
 #include "EixMeleeWeaponHitRegComp.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMeleeHitRegisteredSignature, TArray<FHitResult>, Hits);
+
 typedef TArray<TWeakObjectPtr<const AActor>> FIgnoredActors;
 
 struct FSphericalColliderInfo
@@ -30,6 +32,8 @@ protected:
 #pragma endregion
 
 public:
+	FMeleeHitRegisteredSignature OnMeleeHitRegistered;
+	
 	void SetIgnoredActors(const FIgnoredActors& In_IgnoredActors);
 	
 	void SetHitRegEnabled(bool bEnabled);

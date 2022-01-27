@@ -94,13 +94,8 @@ void UEixMeleeWeaponHitRegComp::ProcessHitRegistration(
 		                                  ->IsDebugCategoryEnabled(DebugCategory::MeleeHitRegistration);
 		
 		TArray<FHitResult> ColliderHits;
-		const bool bGotHit = EixTraceUtils::SweepSphereMultiByChannel(
-			GetWorld(),
-			ColliderHits,
-			PreviousLocation,
-			CurrentLocation,
-			Radius,
-			ECC_Melee,
+		const bool bGotHit = EixTraceUtils::SweepSphereMultiByChannel(GetWorld(), ColliderHits,
+			PreviousLocation, CurrentLocation, Radius, ECC_Melee,
 			EixTraceUtils::DebugDrawParams(bDrawDebug, FColor::Green, FColor::Red, 3.f),
 			CollisionQueryParams
 		);
@@ -134,7 +129,9 @@ void UEixMeleeWeaponHitRegComp::ProcessHitRegistration(
 
 	if (Hits.Num() != 0)
 	{
-		// TODO: Hit - broadcast delegate event
-		UE_LOG(LogTemp, Warning, TEXT("HIT!!!"));
+		if (OnMeleeHitRegistered.IsBound())
+		{
+			OnMeleeHitRegistered.Broadcast(Hits);
+		}
 	}
 }

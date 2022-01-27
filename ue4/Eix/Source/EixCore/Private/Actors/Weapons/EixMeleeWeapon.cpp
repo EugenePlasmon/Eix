@@ -21,6 +21,7 @@ AEixMeleeWeapon::AEixMeleeWeapon()
 void AEixMeleeWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	HitRegComp->OnMeleeHitRegistered.AddDynamic(this, &AEixMeleeWeapon::OnMeleeHitRegistered);
 }
 
 void AEixMeleeWeapon::Tick(float DeltaTime)
@@ -65,4 +66,10 @@ void AEixMeleeWeapon::SetHitRegistrationEnabled(bool bEnabled)
 	}
 
 	HitRegComp->SetHitRegEnabled(bEnabled);
+}
+
+void AEixMeleeWeapon::OnMeleeHitRegistered(TArray<FHitResult> Hits)
+{
+	// TODO: Apply damage and hit reaction. Add damage type for weapon, and its impact severity
+	UE_LOG(LogTemp, Warning, TEXT("HIT!!! HitsNumber %i, BoneName %s"), Hits.Num(), *Hits.Last().BoneName.ToString());
 }

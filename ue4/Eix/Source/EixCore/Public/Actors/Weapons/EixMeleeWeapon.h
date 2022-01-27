@@ -41,5 +41,8 @@ public:
 #endif
 	
 	void SetHitRegistrationEnabled(bool bEnabled);
+
+	UFUNCTION()
+	void OnMeleeHitRegistered(TArray<FHitResult> Hits);
 #pragma endregion
 };

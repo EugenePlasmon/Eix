@@ -7,4 +7,5 @@ UEixCharacterHealthComp::UEixCharacterHealthComp()
 void UEixCharacterHealthComp::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHealth = MaxHealth;
 }

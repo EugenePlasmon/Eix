@@ -18,4 +18,12 @@ protected:
 	virtual void BeginPlay() override;
 #pragma endregion 
 
+public:
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Eix")
+	float MaxHealth = 100.f;
+
+private:
+	float CurrentHealth;
 };

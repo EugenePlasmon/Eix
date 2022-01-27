@@ -25,7 +25,7 @@ bool EixTraceUtils::SweepSphereSingleByChannel
 	if (DebugDrawParams.bDrawDebug)
 	{
 		const EixShapeUtils::CapsuleParams Capsule =
-			EixShapeUtils::MakeCapsuleSweepingSphere(Start, End, Radius);
+			EixShapeUtils::MakeCapsuleBySweepingASphere(Start, End, Radius);
 		const FColor Color = bResult ? DebugDrawParams.HitColor : DebugDrawParams.TraceColor;
 		DrawDebugCapsule(World, Capsule.Location, Capsule.HalfHeight, Capsule.Radius,
 						 Capsule.RotationQuat, Color, false, DebugDrawParams.DrawTime);
@@ -60,7 +60,7 @@ bool EixTraceUtils::SweepSphereMultiByChannel
 	if (DebugDrawParams.bDrawDebug)
 	{
 		const EixShapeUtils::CapsuleParams Capsule =
-			EixShapeUtils::MakeCapsuleSweepingSphere(Start, End, Radius);
+			EixShapeUtils::MakeCapsuleBySweepingASphere(Start, End, Radius);
 		const FColor Color = bResult ? DebugDrawParams.HitColor : DebugDrawParams.TraceColor;
 		DrawDebugCapsule(World, Capsule.Location, Capsule.HalfHeight, Capsule.Radius,
 		                 Capsule.RotationQuat, Color, false, DebugDrawParams.DrawTime);

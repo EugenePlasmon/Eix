@@ -2,7 +2,7 @@
 
 namespace EixShapeUtils
 {
-	CapsuleParams MakeCapsuleSweepingSphere(FVector Start, FVector End, float Radius)
+	CapsuleParams MakeCapsuleBySweepingASphere(FVector Start, FVector End, float Radius)
 	{
 		const FVector Center = (Start + End) / 2.f;
 		const FVector CapsuleUpVector = End - Start;

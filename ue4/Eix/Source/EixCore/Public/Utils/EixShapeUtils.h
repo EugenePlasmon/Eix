@@ -16,5 +16,5 @@ namespace EixShapeUtils
 		{}
 	};
 	
-	CapsuleParams MakeCapsuleSweepingSphere(FVector Start, FVector End, float Radius);
+	CapsuleParams MakeCapsuleBySweepingASphere(FVector Start, FVector End, float Radius);
 }

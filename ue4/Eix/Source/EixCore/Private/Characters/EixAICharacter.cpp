@@ -13,7 +13,7 @@ float AEixAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damage
                                   AController* EventInstigator, AActor* DamageCauser)
 {
 	HitReactionComp->HandleHit(DamageEvent);
-	// TODO: Cause damage to health component
+	HealthComp->TakeDamage(DamageAmount);
 	
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }

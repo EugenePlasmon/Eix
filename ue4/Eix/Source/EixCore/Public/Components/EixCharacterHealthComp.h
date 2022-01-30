@@ -19,6 +19,7 @@ protected:
 #pragma endregion 
 
 public:
+	void TakeDamage(float DamageAmount);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Eix")

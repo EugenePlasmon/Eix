@@ -15,6 +15,18 @@ Here are few examples at work.
 
 <img src="docs/preview/preview_combo_A.gif" alt="drawing" width="720"/>
 
+- Combining primary and secondary attacks:
+
+<img src="docs/preview/preview_combo_B.gif" alt="drawing" width="720"/>
+
+- Chargeable attack (which can also be part of a combo):
+
+<img src="docs/preview/preview_chargeable.gif" alt="drawing" width="720"/>
+
+- Attack after roll or during run (both could also start a combo):
+
+<img src="docs/preview/preview_roll_run_attack.gif" alt="drawing" width="720"/>
+
 ## More things to go...
 
 Current plan:

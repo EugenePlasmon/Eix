@@ -2,6 +2,14 @@
 
 UE4-based game being developed in purpose to create soulslike mechanics.
 
+## Warning
+
+There is no **Content** folder or any assets in this repository for two particular reasons:
+- I am using paid assets and shall not share them via open repository
+- I am using large assets which simple git can not support. There's Git-LFS for this purpose, but for now I decided to go without it
+
+There is a possibility in future that this repository will contain basic Content folder with free assets which would combine in a fully playable demo project.
+
 ## Combat system
 
 There's melee combat system inspired by games from "souls" family, but also adding some new stuff. It's in active development process.

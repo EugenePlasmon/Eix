@@ -18,6 +18,20 @@ AEixMeleeWeapon::AEixMeleeWeapon()
 	HitRegComp = CreateDefaultSubobject<UEixMeleeWeaponHitRegComp>(TEXT("HitRegComponent"));
 }
 
+void AEixMeleeWeapon::SetOwner(AActor* NewOwner)
+{
+	Super::SetOwner(NewOwner);
+	if (IsValid(NewOwner))
+	{
+		check(NewOwner->IsA<AEixCharacter>());
+		CharacterOwner = StaticCast<AEixCharacter*>(NewOwner);
+	}
+	else
+	{
+		CharacterOwner.Reset();
+	}
+}
+
 void AEixMeleeWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -70,6 +84,19 @@ void AEixMeleeWeapon::SetHitRegistrationEnabled(bool bEnabled)
 
 void AEixMeleeWeapon::OnMeleeHitRegistered(TArray<FHitResult> Hits)
 {
-	// TODO: Apply damage and hit reaction. Add damage type for weapon, and its impact severity
-	UE_LOG(LogTemp, Warning, TEXT("HIT!!! HitsNumber %i, BoneName %s"), Hits.Num(), *Hits.Last().BoneName.ToString());
+	for (const FHitResult& Hit: Hits)
+	{
+		if (!Hit.Actor.IsValid())
+		{
+			continue;
+		}
+		// TODO: Damage depends on current weapon and attack
+		constexpr float DamageAmount = 10.f;
+		const FVector Direction = (Hit.TraceEnd - Hit.TraceStart).GetSafeNormal();
+		// TODO: Add damage type
+		const TSubclassOf<UDamageType> DamageType = nullptr;
+		FPointDamageEvent DamageEvent(DamageAmount, Hit, Direction, DamageType);
+		AController* HitInstigator = CharacterOwner.IsValid() ? CharacterOwner->GetController() : nullptr;
+		Hit.Actor->TakeDamage(DamageAmount, DamageEvent, HitInstigator, CharacterOwner.Get());
+	}
 }

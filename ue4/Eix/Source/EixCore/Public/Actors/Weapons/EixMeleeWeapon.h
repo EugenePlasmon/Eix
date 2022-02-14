@@ -13,6 +13,9 @@ public:
 	AEixMeleeWeapon();
 
 #pragma region Overriden
+public:
+	virtual void SetOwner(AActor* NewOwner) override;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -45,4 +48,7 @@ public:
 	UFUNCTION()
 	void OnMeleeHitRegistered(TArray<FHitResult> Hits);
 #pragma endregion
+
+private:
+	TWeakObjectPtr<class AEixCharacter> CharacterOwner;
 };

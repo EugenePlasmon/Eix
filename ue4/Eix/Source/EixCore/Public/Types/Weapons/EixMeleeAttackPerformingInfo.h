@@ -5,6 +5,7 @@
 #include "Types/Character/EixMovementState.h"
 #include "EixMeleeAttackPerformingInfo.Generated.h"
 
+// TODO: rename: PriorInfo or PriorState
 USTRUCT(BlueprintType)
 struct FEixMeleeAttackPerformingInfo
 {

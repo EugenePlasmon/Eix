@@ -19,6 +19,12 @@ protected:
 #pragma endregion 
 
 public:
+	float GetCurrentHealth() const { return CurrentHealth; }
+	float GetCurrentHealthPercentage() const { return CurrentHealth / MaxHealth; }
+
+	DECLARE_EVENT(UEixCharacterHealthComp, FHealthChangedEventSignature);
+	FHealthChangedEventSignature& OnHealthChanged() { return HealthChangedEvent; }
+	
 	void TakeDamage(float DamageAmount);
 
 protected:
@@ -27,4 +33,6 @@ protected:
 
 private:
 	float CurrentHealth;
+
+	FHealthChangedEventSignature HealthChangedEvent;
 };

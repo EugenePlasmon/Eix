@@ -6,6 +6,7 @@
 
 class UEixCharacterHealthComp;
 class UEixCharacterHitReactionComp;
+class UEixEnemyHealthWidgetComp;
 
 UCLASS()
 class EIXCORE_API AEixAICharacter : public AEixCharacter
@@ -31,5 +32,8 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UEixCharacterHitReactionComp* HitReactionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Scene Components")
+	UEixEnemyHealthWidgetComp* EnemyHealthWidgetComp;
 #pragma endregion 
 };

@@ -13,8 +13,9 @@ void UEixCharacterHealthComp::BeginPlay()
 void UEixCharacterHealthComp::TakeDamage(float DamageAmount)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, MaxHealth);
+	HealthChangedEvent.Broadcast();
 	if (FMath::IsNearlyZero(CurrentHealth))
 	{
-		
+		// TODO: death event
 	}
 }
